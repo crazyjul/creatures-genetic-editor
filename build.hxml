@@ -1,0 +1,7 @@
+-cp src
+-lib haxevx
+-lib haxe-loader
+-lib jsprop
+-js public/script/app.js
+-D vue_global
+-main Main
