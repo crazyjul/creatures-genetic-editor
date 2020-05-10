@@ -1,6 +1,5 @@
 module.exports = {
     chainWebpack: config => {
-        // GraphQL Loader
         config.module
             .rule('haxe-loader')
             .test(/\.hxml$/)
@@ -14,5 +13,5 @@ module.exports = {
             .loader('html-loader')
             .end()
     },
-    runtimeCompiler : true
+    runtimeCompiler: true
 }

@@ -9,19 +9,23 @@ import haxevx.vuex.core.NoneT;
 import haxevx.vuex.core.VModule;
 import store.AppMutator;
 
+import creatures.Genome;
+import haxe.io.Bytes;
+
 
 class Genome extends VModule<GenomeState, NoneT> {
     public function new() {
         // Initial State
         state = {
-            byteArray: null
+            byteArray: null,
+            genome : null
         };
     }
 
-    public var isValid(get,never):  Bool;
+    public var isValid(get, never):  Bool;
 
-    static function Get_isValid(state:GenomeState):Bool {
-        return state.byteArray != null;
+    static function Get_isValid(state:GenomeState) {
+        return state.byteArray  != null && state.genome != null && state.genome.isValid;
     }
 
     @:action static var action:GenomeDispatcher;
@@ -29,7 +33,8 @@ class Genome extends VModule<GenomeState, NoneT> {
 }
 
 typedef GenomeState = {
-    var byteArray : Dynamic;
+    var byteArray : Bytes;
+    var genome : Genome;
 }
 
 class GenomeDispatcher implements IAction<Genome, NoneT> {

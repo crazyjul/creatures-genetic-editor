@@ -1,0 +1,10 @@
+<label class="file-select">
+    <!-- We can't use a normal button element here, as it would become the target of the label. -->
+    <div class="select-button">
+        <!-- Display the filename if a file has been selected. -->
+        <span v-if="value">Selected File: {{value.name}}</span>
+        <span v-else>Select File</span>
+    </div>
+    <!-- Now, the file input that we hide. -->
+    <input type="file" @change="handleFileChange" />
+</label>

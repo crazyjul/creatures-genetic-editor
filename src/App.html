@@ -1,8 +1,16 @@
 <div>
-	<div class="genome">
-		Hello world
+
+	<div v-if="isValid">
+		<div class="genome">
+			Hello world
+		</div>
+		<div class="geneview">
+			World
+		</div>
 	</div>
-	<div class="geneview">
-		World
+	<div v-else>
+		<p>Open a genome: <file-select v-model="file"></file-select>
+		</p>
+		<p v-if="file">{{file.name}}</p>
 	</div>
 </div>

@@ -5,3 +5,5 @@
 -js public/script/app.js
 -D vue_global
 -main Main
+
+-cp ../creatures/src/
