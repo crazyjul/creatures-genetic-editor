@@ -6,4 +6,4 @@
 -D vue_global
 -main Main
 
--cp ../creatures/src/
+-lib creatures-genetics-toolbox

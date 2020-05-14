@@ -2,10 +2,30 @@
 
 	<div v-if="isValid">
 		<div class="genome">
-			Hello world
+			<table>
+				<tr>
+					<th>#</th>
+					<th>Gen-#</th>
+					<th>G-Id</th>
+					<th>Switch on</th>
+					<th>Sex</th>
+					<th>Mutability</th>
+					<th>Description</th>
+				</tr>
+
+				<tr v-for="(gene, i) in genes" @click="selectGene(gene)" v-bind:class="{selected : isSelected(gene)}">
+					<td>{{i}}</td>
+					<td>{{gene.generation}}</td>
+					<td>{{gene.id}}</td>
+					<td>{{gene.age | to_string}}</td>
+					<td>{{gene.sex | to_string}}</td>
+					<td>{{gene.mutability | to_string}}</td>
+					<td>{{gene.getName()}}</td>
+				</tr>
+			</table>
 		</div>
-		<div class="geneview">
-			World
+		<div class="gene-view">
+			<gene-view v-model="currentGene" />
 		</div>
 	</div>
 	<div v-else>

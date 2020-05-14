@@ -1,0 +1,12 @@
+.genome {
+    width: 30%;
+    float: left;
+}
+
+.gene-view {
+    width: 67%;
+}
+
+.genome .selected {
+    background-color: lightblue;
+}
