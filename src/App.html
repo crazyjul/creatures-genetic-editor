@@ -13,7 +13,8 @@
 					<th>Description</th>
 				</tr>
 
-				<tr v-for="(gene, i) in genes" @click="selectGene(gene)" v-bind:class="{selected : isSelected(gene)}">
+				<tr v-for="(gene, i) in genes" @click="toggleGeneSelection(gene)"
+					v-bind:class="{selected : isSelected(gene)}">
 					<td>{{i}}</td>
 					<td>{{gene.generation}}</td>
 					<td>{{gene.id}}</td>
@@ -25,7 +26,7 @@
 			</table>
 		</div>
 		<div class="gene-view">
-			<gene-view v-model="currentGene" />
+			<gene-view v-model="selectedGenes" />
 		</div>
 	</div>
 	<div v-else>

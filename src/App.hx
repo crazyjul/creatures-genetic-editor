@@ -16,7 +16,7 @@ class App extends VComponent<AppData, NoneT> {
     }
 
     override public function Data() :  AppData {
-        return { file : null, genome : null, currentGene : null };
+        return { file : null, genome : null, selectedGenes : [] };
     }
 
     override public function Template() {
@@ -43,12 +43,18 @@ class App extends VComponent<AppData, NoneT> {
         return genome.genes;
     }
 
-    function selectGene(selected : Gene) {
-        currentGene = selected;
+    function toggleGeneSelection(selected : Gene) {
+        var gene_index = selectedGenes.indexOf(selected);
+
+        if(gene_index == -1) {
+            selectedGenes.push(selected);
+        } else {
+            selectedGenes.remove(selected);
+        }
     }
 
     function isSelected(item : Gene) : Bool {
-        return currentGene == item;
+        return selectedGenes.indexOf(item) != -1;
     }
 
     @:watch(file) function fileChanged(newValue:js.html.File, oldValue:js.html.File):Void {
@@ -68,6 +74,6 @@ class App extends VComponent<AppData, NoneT> {
 typedef AppData = {
     var file: js.html.File;
     var genome: creatures.Genome;
-    var currentGene: creatures.gene.Gene;
+    var selectedGenes: Array<creatures.gene.Gene>;
 }
 

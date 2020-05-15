@@ -5,23 +5,23 @@ import haxevx.vuex.core.VComponent;
 
 import creatures.gene.Gene;
 
-class GeneView extends VComponent<NoneT, Props> {
+class GeneHeader extends VComponent<NoneT, Props> {
     public function new() {
         super();
-        Webpack.require("./GeneView.css");
+        Webpack.require("./GeneHeader.css");
     }
 
     override public function Components() {
-        return ["gene-header" => new GeneHeader()];
+        return [];
     }
 
     override public function Template() {
-        return Webpack.require('./GeneView.html');
+        return Webpack.require('./GeneHeader.html');
     }
 
 }
 
 private typedef Props = {
-    var value: Array<Gene>;
+    var value: Gene;
 };
 
