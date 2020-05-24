@@ -13,6 +13,7 @@ class Main {
         Vue.filter('to_string', function(a) {
             return Std.string(a);
         });
+
         new Vue(new App());
     }
 
