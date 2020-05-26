@@ -12,7 +12,10 @@ class GeneView extends VComponent<NoneT, Props> {
     }
 
     override public function Components() {
-        return ["gene-header" => new GeneHeader()];
+        return ["gene-header" => new GeneHeader(),
+        "Organ-panel" => new components.genes.OrganPanel(),
+        "Receptor-panel" => new components.genes.ReceptorPanel(),
+        "Genus-panel" => new components.genes.GenusPanel()];
     }
 
     override public function Template() {

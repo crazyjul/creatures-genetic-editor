@@ -73,5 +73,6 @@ private typedef Data = {
 
 private typedef Props = {
     var value: Gene;
+    var name : String;
 };
 

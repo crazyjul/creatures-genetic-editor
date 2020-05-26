@@ -1,7 +1,7 @@
 <el-container>
 
   <el-header height="20px">
-    {{value.id}} - {{value.annotation}}
+    {{value.id}} - {{name}} - {{value.annotation}}
   </el-header>
   <el-main>
     <el-select :span="12" v-model="value.age" placeholder="Select">
@@ -11,12 +11,13 @@
     <el-checkbox :span="4" v-model="duplicate">Dup</el-checkbox>
     <el-checkbox :span="4" v-model="mutate">Mut</el-checkbox>
 
-    <el-input-number :span="4" v-model="value.mutability" controls-position="right" :min="0" :max="255"/>
+    <el-input-number :span="4" v-model="value.mutability" controls-position="right" :min="0" :max="255" />
 
     <el-radio-group v-model="value.sex">
       <el-radio label="Both">B</el-radio>
       <el-radio label="Male">M</el-radio>
       <el-radio label="Female">F</el-radio>
     </el-radio-group>
+    <slot></slot>
   </el-main>
 </el-container>
