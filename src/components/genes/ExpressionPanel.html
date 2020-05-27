@@ -1,0 +1,6 @@
+<gene-header v-model="value" name="Expression">
+    <div>Expression : {{value.expressionId}} </div>
+    <div>weight: {{value.weight}} </div>
+    <div v-for="i in [0, 1, 2, 3]">
+        Drive {{value.drives[i]}} : {{value.driveWeights[i]}} </div>
+</gene-header>

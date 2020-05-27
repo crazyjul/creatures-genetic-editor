@@ -1,0 +1,9 @@
+<gene-header v-model="value" name="Appearance">
+    <div>stimulus : {{value.stimulus}} </div>
+    <div>nounStimulation : {{value.nounStimulation}} </div>
+    <div>verbToStimulate : {{value.verbToStimulate}} </div>
+    <div>stimulusFlags : {{value.stimulusFlags}} </div>
+    <div v-for="(chemical, index) in value.chemicals">
+        chemical {{chemical}} value :{{value.adjustments[index]}}
+    </div>
+</gene-header>

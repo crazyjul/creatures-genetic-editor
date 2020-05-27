@@ -1,0 +1,5 @@
+<gene-header v-model="value" name="Half lives">
+    <div v-for="(decay,index) in value.decayRates"><!--:TODO: Load chemical names-->
+        Chemical {{index}} : {{value.decayRates[index]}}
+    </div>
+</gene-header>
