@@ -33,5 +33,6 @@ class GeneView extends VComponent<NoneT, Props> {
 
 private typedef Props = {
     var value: Array<Gene>;
+    var notes : creatures.gene.notes.GenomeNotes;
 };
 

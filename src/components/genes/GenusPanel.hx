@@ -22,5 +22,6 @@ class GenusPanel extends VComponent<NoneT, Props> {
 
 private typedef Props = {
     var value: Gene;
+    var notes : creatures.gene.notes.GenomeNotes;
 };
 

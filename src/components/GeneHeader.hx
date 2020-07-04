@@ -36,6 +36,7 @@ class GeneHeader extends VComponent<Data, Props> {
 
     var duplicate(get, set):Bool;
     var mutate(get, set):Bool;
+    var annotation(get, never) : String;
 
     function get_duplicate() : Bool {
         return value.hasFlag(CanBeDuplicated);
@@ -65,6 +66,11 @@ class GeneHeader extends VComponent<Data, Props> {
         return mut;
     }
 
+    function get_annotation() : String {
+        if(notes == null ) return "";
+        var note = notes.getDescription(value.type, value.subtype, value.id);
+        return note != "" ? note : "<no annotation>";
+    }
 }
 
 private typedef Data = {
@@ -74,5 +80,6 @@ private typedef Data = {
 private typedef Props = {
     var value: Gene;
     var name : String;
+    var notes : creatures.gene.notes.GenomeNotes;
 };
 

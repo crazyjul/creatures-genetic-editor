@@ -1,4 +1,4 @@
-<gene-header v-model="value" name="Expression">
+<gene-header v-model="value" name="Expression" :notes="notes">
     <div>Expression : {{value.expressionId}} </div>
     <div>weight: {{value.weight}} </div>
     <div v-for="i in [0, 1, 2, 3]">

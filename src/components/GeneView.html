@@ -2,7 +2,7 @@
 
     <div v-for="(gene,index) in value">
 
-        <component :is="value[index].typename + '-panel'" v-if="value[index].typename" v-model="value[index]" />
+        <component :is="value[index].typename + '-panel'" v-if="value[index].typename" v-model="value[index]" :notes="notes" />
         <gene-header v-else v-model="value[index]" />
     </div>
 </div>
