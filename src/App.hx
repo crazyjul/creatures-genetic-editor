@@ -16,7 +16,7 @@ class App extends VComponent<AppData, NoneT> {
     }
 
     override public function Data() :  AppData {
-        return { file : null, genome : null, selectedGenes : [] };
+        return { file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null };
     }
 
     override public function Template() {
@@ -69,11 +69,27 @@ class App extends VComponent<AppData, NoneT> {
             trace(event);
         };
     }
+
+    @:watch(gnoFile) function gnoFileChanged(newValue:js.html.File, oldValue:js.html.File):Void {
+        var reader = new js.html.FileReader();
+        reader.readAsArrayBuffer(gnoFile);
+        reader.onload =  function(event) {
+            var buffer : js.html.ArrayBuffer = event.target.result;
+            var bytes =  haxe.io.Bytes.ofData(buffer);
+            genomeNotes = new creatures.gene.notes.GenomeNotes();
+            genomeNotes.load(bytes);
+        }
+        reader.onerror = function(event) {
+            trace(event);
+        };
+    }
 }
 
 typedef AppData = {
     var file: js.html.File;
+    var gnoFile: js.html.File;
     var genome: creatures.Genome;
+    var genomeNotes: creatures.gene.notes.GenomeNotes;
     var selectedGenes: Array<creatures.gene.Gene>;
 }
 
