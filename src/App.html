@@ -25,7 +25,7 @@
 					<td>{{gene.age}}</td>
 					<td>{{gene.sex}}</td>
 					<td>{{gene.mutability | to_string}}</td>
-					<td>{{genomeNotes?genomeNotes.getDescription(gene.id) : gene.getName()}}</td>
+					<td>{{genomeNotes?genomeNotes.getDescription(gene.type, gene.subtype, gene.id) : gene.getName()}}</td>
 				</tr>
 			</table>
 		</div>
