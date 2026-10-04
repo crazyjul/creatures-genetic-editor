@@ -1,12 +1,16 @@
 <gene-header v-model="value" name="Emitter" :notes="notes">
     <div class="fields">
-        <div class="field"><span class="label">Organ</span><span class="value">{{value.organ}}</span></div>
+        <div class="field"><span class="label">Organ</span><span class="value">{{['Brain', 'Creature', 'Organ'][value.organ]}} <span class="muted">({{value.organ}})</span></span></div>
         <div class="field"><span class="label">Tissue</span><span class="value">{{value.tissue}}</span></div>
         <div class="field"><span class="label">Locus</span><span class="value">{{value.locus}}</span></div>
         <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical}}</span></div>
         <div class="field"><span class="label">Threshold</span><span class="value">{{value.threshold | num}}</span></div>
         <div class="field"><span class="label">Bio tick rate</span><span class="value">{{value.bioTickRate}}</span></div>
         <div class="field"><span class="label">Gain</span><span class="value">{{value.gain | num}}</span></div>
-        <div class="field"><span class="label">Effect</span><span class="value">{{value.effect}}</span></div>
+        <div class="field wide"><span class="label">Effect</span><span class="value flags-value">
+            <span class="flag-pill" :class="{on : value.digital}">{{value.digital ? 'Digital' : 'Analogue'}}</span>
+            <span class="flag-pill" :class="{on : value.inverts}">{{value.inverts ? 'Inverts the source' : 'Source as is'}}</span>
+            <span class="flag-pill" :class="{on : value.removes}">{{value.removes ? 'Clears the source' : 'Keeps the source'}}</span>
+        </span></div>
     </div>
 </gene-header>

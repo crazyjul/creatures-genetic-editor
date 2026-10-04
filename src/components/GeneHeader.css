@@ -595,3 +595,124 @@
     padding: 0 .8rem .6rem;
     font-size: .72rem;
 }
+
+/* ---------- reaction ---------- */
+
+.reaction {
+    display: flex;
+    align-items: stretch;
+    gap: .6rem;
+    margin-bottom: 1rem;
+}
+
+.reaction-side {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    padding: .6rem .8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.reaction-term {
+    padding: .15rem .55rem;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .85rem;
+}
+
+.reaction-term.none {
+    background: transparent;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.reaction-plus {
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.reaction-arrow {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 76px;
+    color: var(--accent);
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.reaction-arrow small {
+    margin-top: .2rem;
+    color: var(--text-muted);
+    font-size: .68rem;
+}
+
+.fields + .bar {
+    margin-top: .8rem;
+}
+
+/* ---------- half lives ---------- */
+
+.halflife-chart {
+    display: block;
+    width: 100%;
+    height: 150px;
+    margin-top: .3rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.halflife-chart .hl-bar {
+    fill: var(--accent);
+}
+
+.halflife-chart .hl-bar.instant {
+    fill: var(--danger);
+}
+
+.halflife-chart .hl-bar:hover {
+    fill: var(--text);
+}
+
+.halflife-chart .axis {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.halflife-chart .tick {
+    fill: var(--text-muted);
+    font-size: 7px;
+}
+
+/* ---------- effect flags ---------- */
+
+.flags-value {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.flag-pill {
+    padding: .1rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    font-size: .8rem;
+}
+
+.flag-pill.on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}

@@ -1,12 +1,36 @@
 <gene-header v-model="value" name="Reaction" :notes="notes">
+    <div class="reaction">
+        <div class="reaction-side">
+            <template v-if="value.reactants.length > 0">
+                <template v-for="(term, i) in value.reactants">
+                    <span class="reaction-plus" v-if="i > 0" :key="'rp' + i">+</span>
+                    <span class="reaction-term" :key="'r' + i"><b>{{term.proportion}}&times;</b> chem {{term.chemical}}</span>
+                </template>
+            </template>
+            <span class="reaction-term none" v-else>nothing</span>
+        </div>
+
+        <div class="reaction-arrow">
+            <span>&rarr;</span>
+            <small>{{ticks(value.halfLifeTicks)}} ticks</small>
+        </div>
+
+        <div class="reaction-side">
+            <template v-if="value.products.length > 0">
+                <template v-for="(term, i) in value.products">
+                    <span class="reaction-plus" v-if="i > 0" :key="'pp' + i">+</span>
+                    <span class="reaction-term" :key="'p' + i"><b>{{term.proportion}}&times;</b> chem {{term.chemical}}</span>
+                </template>
+            </template>
+            <span class="reaction-term none" v-else>nothing</span>
+        </div>
+    </div>
+
     <div class="fields">
-        <div class="field"><span class="label">Organ</span><span class="value">{{value.organ}}</span></div>
-        <div class="field"><span class="label">Tissue</span><span class="value">{{value.tissue}}</span></div>
-        <div class="field"><span class="label">Locus</span><span class="value">{{value.locus}}</span></div>
-        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical}}</span></div>
-        <div class="field"><span class="label">Threshold</span><span class="value">{{value.threshold | num}}</span></div>
-        <div class="field"><span class="label">Nominal</span><span class="value">{{value.nominal | num}}</span></div>
-        <div class="field"><span class="label">Gain</span><span class="value">{{value.gain | num}}</span></div>
-        <div class="field"><span class="label">Effect</span><span class="value">{{value.effect}}</span></div>
+        <div class="field"><span class="label">Speed</span><span class="value">{{value.speed | num}} <span class="muted">(1 is fastest)</span></span></div>
+        <div class="field"><span class="label">Half life</span><span class="value">{{ticks(value.halfLifeTicks)}} <span class="muted">ticks</span></span></div>
+    </div>
+    <div class="bar" title="Reaction speed">
+        <div class="bar-fill" :style="{width : value.speed * 100 + '%'}"></div>
     </div>
 </gene-header>

@@ -1,6 +1,18 @@
 <gene-header v-model="value" name="Half lives" :notes="notes">
     <div class="fields">
-
-        <div class="field" v-for="(decay, index) in value.decayRates" :key="index"><span class="label">Chemical {{index}}</span><span class="value">{{decay | num}}</span></div>
+        <div class="field"><span class="label">Chemicals</span><span class="value">{{value.decayRates.length}}</span></div>
+        <div class="field"><span class="label">Vanish at once</span><span class="value">{{instantCount}}</span></div>
+        <div class="field"><span class="label">Longest lasting</span><span class="value">chem {{slowest}} <span class="muted">({{ticks(value.halfLives[slowest])}} ticks)</span></span></div>
     </div>
+
+    <div class="label-row">Half life of every chemical <span class="muted">(taller lasts longer, log scale)</span></div>
+    <svg class="halflife-chart" viewBox="0 0 512 112" preserveAspectRatio="none" role="img" aria-label="Half life of each chemical">
+        <rect v-for="bar in bars" :key="bar.chemical" class="hl-bar" :class="{instant : bar.instant}"
+            :x="bar.x" :y="104 - bar.height" width="1.6" :height="bar.height">
+            <title>{{bar.title}}</title>
+        </rect>
+        <line x1="0" y1="104.5" x2="512" y2="104.5" class="axis" />
+        <text v-for="tick in [0, 64, 128, 192, 255]" :key="tick" class="tick" :x="tick * 2" y="111"
+            :text-anchor="tick == 0 ? 'start' : (tick == 255 ? 'end' : 'middle')">{{tick}}</text>
+    </svg>
 </gene-header>
