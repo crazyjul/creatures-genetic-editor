@@ -70,6 +70,13 @@ npm run build
 show up as webpack errors. To check the Haxe code alone, run the same command as `build.hxml`
 (for example `haxe build.hxml`).
 
+## Publishing on GitHub Pages
+
+`.github/workflows/pages.yml` builds the app and deploys `dist` on every push to `master`. Once, in the repository
+settings, set **Pages > Source** to **GitHub Actions**. The workflow installs Haxe 4.3.7 and the Haxe libraries
+(`haxevx` and `creatures-genetics-toolbox` from their GitHub repositories, so push toolbox changes first). The build
+uses relative asset paths, so the site works under `https://<user>.github.io/<repository>/`.
+
 ## Layout
 
 - `src/Main.hx` – entry point, mounts the root Vue component and registers the template filters
