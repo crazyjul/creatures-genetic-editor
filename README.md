@@ -3,6 +3,8 @@
 Browser-based viewer and editor for Creatures 3 / Docking Station genome files. The UI is written in
 [Haxe](https://haxe.org) (compiled to JS) on top of Vue 2, and built with Vue CLI / webpack.
 
+**Try it online: <https://crazyjul.github.io/creatures-genetic-editor/>**
+
 Open a genome (`.gen`) and, optionally, its genome notes (`.gno`), which give the genes their descriptions.
 
 ## Features
