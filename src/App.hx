@@ -26,6 +26,7 @@ class App extends VComponent<AppData, NoneT> {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
             view : "genes", compare : false, theme : "light", cursorKey : "",
+            chemical : -1, chemicalSearch : "", usedOnly : true,
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
             ages : [
@@ -225,6 +226,79 @@ class App extends VComponent<AppData, NoneT> {
         }
 
         return genome.genes;
+    }
+
+    var chemicalUsage(get, never):Map<Int, Array<creatures.ChemicalUsage.ChemicalUse>>;
+
+    function get_chemicalUsage() : Map<Int, Array<creatures.ChemicalUsage.ChemicalUse>> {
+        return creatures.ChemicalUsage.collect(genes);
+    }
+
+    /** One line per chemical that is named in the game's list or used by a gene. */
+    var chemicalRows(get, never):Array<ChemicalRow>;
+
+    function get_chemicalRows() : Array<ChemicalRow> {
+        var usage = chemicalUsage;
+        var needle = chemicalSearch.toLowerCase();
+        var result = [];
+
+        for(id in 1...256) {
+            var uses = usage.exists(id) ? usage[id] : [];
+
+            if(uses.length == 0 && (usedOnly || !creatures.Chemicals.isKnown(id))) {
+                continue;
+            }
+
+            var name = creatures.Chemicals.name(id);
+
+            if(needle != "" && name.toLowerCase().indexOf(needle) == -1 && Std.string(id) != needle) {
+                continue;
+            }
+
+            result.push({ id : id, name : name, count : uses.length, summary : summariseUses(uses) });
+        }
+
+        return result;
+    }
+
+    /** "2 reactant, 1 receptor" */
+    function summariseUses(uses : Array<creatures.ChemicalUsage.ChemicalUse>) : String {
+        var counts = new Map<String, Int>();
+        var order = [];
+
+        for(use in uses) {
+            if(!counts.exists(use.role)) {
+                counts[use.role] = 0;
+                order.push(use.role);
+            }
+
+            counts[use.role] += 1;
+        }
+
+        return order.map(function(role) return counts[role] + " " + role).join(", ");
+    }
+
+    /** The genes that use the chemical chosen in the Chemicals view. */
+    var chemicalUses(get, never):Array<ChemicalUseRow>;
+
+    function get_chemicalUses() : Array<ChemicalUseRow> {
+        var usage = chemicalUsage;
+
+        if(chemical < 1 || !usage.exists(chemical)) {
+            return [];
+        }
+
+        return [for(use in usage[chemical]) {
+            key : use.index + use.role,
+            role : use.role,
+            index : use.index,
+            gene : use.gene,
+            label : describe(use.gene)
+        }];
+    }
+
+    function chemicalName(id : Int) : String {
+        return creatures.Chemicals.label(id);
     }
 
     var lobeGenes(get, never):Array<LobeGene>;
@@ -474,6 +548,7 @@ class App extends VComponent<AppData, NoneT> {
             kindFilter = -1;
             ageFilter = "";
             cursorKey = "";
+            chemical = -1;
             collapsed = [];
             view = "genes";
             genome = new creatures.Genome(bytes);
@@ -514,6 +589,9 @@ typedef AppData = {
     var compare: Bool;
     var theme: String;
     var cursorKey: String;
+    var chemical: Int;
+    var chemicalSearch: String;
+    var usedOnly: Bool;
     var grouped: Bool;
     var collapsed: Array<String>;
     var search: String;
@@ -526,6 +604,21 @@ typedef AppData = {
 typedef GeneRow = {
     var index: Int;
     var gene: Gene;
+}
+
+typedef ChemicalRow = {
+    var id: Int;
+    var name: String;
+    var count: Int;
+    var summary: String;
+}
+
+typedef ChemicalUseRow = {
+    var key: String;
+    var role: String;
+    var index: Int;
+    var gene: Gene;
+    var label: String;
 }
 
 typedef GeneGroup = {

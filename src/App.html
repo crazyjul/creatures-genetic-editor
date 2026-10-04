@@ -10,6 +10,7 @@
 			<button type="button" :class="{active : view == 'genes'}" @click="view = 'genes'">Genes</button>
 			<button type="button" :class="{active : view == 'brain'}" :disabled="lobeGenes.length == 0"
 				@click="view = 'brain'">Brain map</button>
+			<button type="button" :class="{active : view == 'chemicals'}" @click="view = 'chemicals'">Chemicals</button>
 		</div>
 
 		<div class="topbar-spacer"></div>
@@ -41,7 +42,7 @@
 			</div>
 		</section>
 
-		<section class="pane" v-else>
+		<section class="pane" v-else-if="view == 'genes'">
 			<div class="pane-header">
 				<div class="pane-title">Genes<small>{{rows.length}} of {{genes.length}}</small></div>
 					<template v-if="grouped">
@@ -126,6 +127,40 @@
 			</div>
 		</section>
 
+		<section class="pane" v-else>
+			<div class="pane-header">
+				<div class="pane-title">Chemicals<small>{{chemicalRows.length}}</small></div>
+				<el-checkbox v-model="usedOnly">Only chemicals genes use</el-checkbox>
+			</div>
+			<div class="toolbar">
+				<el-input v-model="chemicalSearch" size="small" clearable prefix-icon="el-icon-search"
+					placeholder="Search by name or number"></el-input>
+			</div>
+			<div class="pane-body">
+				<table class="genome-table chemical-table" v-if="chemicalRows.length > 0">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Chemical</th>
+							<th>Used by</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="row in chemicalRows" :key="row.id" :class="{selected : chemical == row.id, unused : row.count == 0}"
+							@click="chemical = chemical == row.id ? -1 : row.id">
+							<td class="muted">{{row.id}}</td>
+							<td class="description">{{row.name}}</td>
+							<td class="muted">{{row.count == 0 ? '-' : row.summary}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="empty" v-else>
+					<div class="emoji">&#128269;</div>
+					<div>No chemical matches.</div>
+				</div>
+			</div>
+		</section>
+
 		<section class="pane">
 			<div class="pane-header">
 				<div class="pane-title">Selected genes<small v-if="selectedGenes.length > 0">{{selectedGenes.length}}</small></div>
@@ -136,7 +171,17 @@
 					<button type="button" class="btn" v-if="selectedGenes.length > 0" @click="clearSelection()">Clear selection</button>
 			</div>
 			<div class="pane-body">
-				<compare-view v-if="compare && selectedGenes.length > 1" :genes="selectedGenes"
+				<div class="uses" v-if="view == 'chemicals' && chemical != -1">
+						<div class="uses-title">{{chemicalName(chemical)}} <span class="muted">is used by {{chemicalUses.length}} gene{{chemicalUses.length == 1 ? '' : 's'}}</span></div>
+						<div class="use" v-for="use in chemicalUses" :key="use.key" :class="{selected : isSelected(use.gene)}"
+							@click="toggleGeneSelection(use.gene)">
+							<span class="use-role" :class="'role-' + use.role.replace(' ', '-')">{{use.role}}</span>
+							<span class="use-label" :title="use.label">{{use.label}}</span>
+							<span class="muted">#{{use.index}}</span>
+						</div>
+						<div class="muted" v-if="chemicalUses.length == 0">No gene in this genome mentions this chemical (half-life genes cover every chemical).</div>
+					</div>
+					<compare-view v-if="compare && selectedGenes.length > 1" :genes="selectedGenes"
 						:labels="selectedLabels"></compare-view>
 					<div class="details" v-else-if="selectedGenes.length > 0">
 					<gene-view v-model="selectedGenes" :notes="genomeNotes"/>
