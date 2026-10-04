@@ -25,7 +25,7 @@ class App extends VComponent<AppData, NoneT> {
     override public function Data() :  AppData {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
-            view : "genes", compare : false, theme : "light",
+            view : "genes", compare : false, theme : "light", cursorKey : "",
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
             ages : [
@@ -70,6 +70,127 @@ class App extends VComponent<AppData, NoneT> {
         }
 
         applyTheme();
+    }
+
+    override function Mounted() : Void {
+        js.Browser.document.addEventListener("keydown", onKeyDown);
+    }
+
+    /**
+     * List shortcuts: arrows and Home/End move the cursor, Enter or Space selects, "/" searches and
+     * Escape clears the search. Ignored while typing in a field, or with a modifier held.
+     */
+    function onKeyDown(event : js.html.KeyboardEvent) : Void {
+        if(event.ctrlKey || event.metaKey || event.altKey) {
+            return;
+        }
+
+        var target : js.html.Element = cast event.target;
+        var tag = target != null ? target.tagName : "";
+        var typing = tag == "INPUT" || tag == "TEXTAREA" || tag == "SELECT" || (target != null && target.isContentEditable);
+
+        if(event.key == "Escape") {
+            if(search != "") {
+                search = "";
+            }
+
+            if(typing) {
+                target.blur();
+            }
+
+            return;
+        }
+
+        if(!isValid || view != "genes" || typing) {
+            return;
+        }
+
+        switch(event.key) {
+            case "/":
+                event.preventDefault();
+                var box : js.html.InputElement = cast js.Browser.document.querySelector(".toolbar input");
+
+                if(box != null) {
+                    box.focus();
+                }
+            case "ArrowDown":
+                event.preventDefault();
+                moveCursor(1);
+            case "ArrowUp":
+                event.preventDefault();
+                moveCursor(-1);
+            case "Home":
+                event.preventDefault();
+                moveCursorTo(0);
+            case "End":
+                event.preventDefault();
+                moveCursorTo(-1);
+            case "Enter" | " ":
+                // A focused button handles these itself.
+                if(tag != "BUTTON") {
+                    event.preventDefault();
+                    toggleCursor();
+                }
+        }
+    }
+
+    function geneItems() : Array<ListItem> {
+        return items.filter(function(item) return !item.isGroup);
+    }
+
+    function moveCursor(delta : Int) : Void {
+        var list = geneItems();
+
+        if(list.length == 0) {
+            return;
+        }
+
+        var current = -1;
+
+        for(i in 0...list.length) {
+            if(list[i].key == cursorKey) {
+                current = i;
+                break;
+            }
+        }
+
+        var next = current == -1 ? (delta > 0 ? 0 : list.length - 1) : current + delta;
+        moveCursorTo(next < 0 ? 0 : (next >= list.length ? list.length - 1 : next));
+    }
+
+    /** Moves to the given position among the visible genes; -1 means the last one. */
+    function moveCursorTo(position : Int) : Void {
+        var list = geneItems();
+
+        if(list.length == 0) {
+            return;
+        }
+
+        cursorKey = list[position == -1 ? list.length - 1 : position].key;
+
+        // Wait for the row to be marked before scrolling to it.
+        js.Browser.window.setTimeout(function() {
+            var row = js.Browser.document.querySelector("tr.cursor");
+
+            if(row != null) {
+                untyped row.scrollIntoView({ block : "nearest" });
+            }
+        }, 0);
+    }
+
+    function toggleCursor() : Void {
+        for(item in geneItems()) {
+            if(item.key == cursorKey) {
+                toggleGeneSelection(item.gene);
+                return;
+            }
+        }
+    }
+
+    /** A click both moves the cursor and toggles the gene, so keyboard use can continue from there. */
+    function selectRow(item : ListItem) : Void {
+        cursorKey = item.key;
+        toggleGeneSelection(item.gene);
     }
 
     function applyTheme() {
@@ -352,6 +473,7 @@ class App extends VComponent<AppData, NoneT> {
             search = "";
             kindFilter = -1;
             ageFilter = "";
+            cursorKey = "";
             collapsed = [];
             view = "genes";
             genome = new creatures.Genome(bytes);
@@ -391,6 +513,7 @@ typedef AppData = {
     var view: String;
     var compare: Bool;
     var theme: String;
+    var cursorKey: String;
     var grouped: Bool;
     var collapsed: Array<String>;
     var search: String;

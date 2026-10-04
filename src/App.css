@@ -746,3 +746,34 @@ html, body {
     border-color: var(--accent);
     color: var(--accent);
 }
+
+/* ---------- keyboard navigation ---------- */
+
+.genome-table tbody tr.cursor {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.kbd-hint {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem 1rem;
+    color: var(--text-muted);
+    font-size: .74rem;
+}
+
+.kbd-hint kbd {
+    display: inline-block;
+    min-width: 1.4rem;
+    margin-right: .25rem;
+    padding: .02rem .35rem;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: .72rem;
+    font-weight: 600;
+    text-align: center;
+}

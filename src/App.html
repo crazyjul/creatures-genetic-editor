@@ -64,6 +64,12 @@
 						{{kind.label}} <span class="count">{{kindCount(kind.type)}}</span>
 					</button>
 				</div>
+				<div class="kbd-hint">
+					<span><kbd>&uarr;</kbd><kbd>&darr;</kbd> move</span>
+					<span><kbd>Enter</kbd> select</span>
+					<span><kbd>/</kbd> search</span>
+					<span><kbd>Esc</kbd> clear</span>
+				</div>
 				<div class="timeline" title="Life stage at which genes switch on">
 					<button type="button" class="stage all" :class="{active : ageFilter == ''}" @click="ageFilter = ''">
 						<span class="stage-name">All</span>
@@ -100,8 +106,8 @@
 									<span class="group-count">{{item.count}}</span>
 								</td>
 							</tr>
-							<tr v-else :key="item.key" @click="toggleGeneSelection(item.gene)"
-								:class="['kind-' + item.gene.type, {selected : isSelected(item.gene)}]">
+							<tr v-else :key="item.key" :data-key="item.key" @click="selectRow(item)"
+								:class="['kind-' + item.gene.type, {selected : isSelected(item.gene), cursor : item.key == cursorKey}]">
 								<td class="muted">{{item.index}}</td>
 								<td class="description" :title="describe(item.gene)"><span class="dot"></span>{{describe(item.gene)}}</td>
 								<td>{{item.gene.id}}</td>
