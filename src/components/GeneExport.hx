@@ -35,6 +35,20 @@ class GeneExport {
         })({0}, {1})", fileName, text);
     }
 
+    /** Saves binary data (a genome file) through the browser's download. */
+    public static function downloadBytes(fileName : String, bytes : haxe.io.Bytes) : Void {
+        js.Syntax.code("(function(name, data) {
+            var url = URL.createObjectURL(new Blob([data], { type: 'application/octet-stream' }));
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+        })({0}, {1})", fileName, bytes.getData());
+    }
+
     /** Copies the text to the clipboard; false when the browser refuses. */
     public static function copy(text : String, done : Bool -> Void) : Void {
         js.Syntax.code("(function(text, done) {

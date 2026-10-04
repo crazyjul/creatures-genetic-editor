@@ -1,0 +1,47 @@
+<div class="gene-editor">
+    <details class="editor" v-if="fields.length > 0">
+        <summary>Edit values <span class="muted">{{fields.length}} fields</span></summary>
+        <div class="editor-grid">
+            <div class="editor-field" v-for="f in fields" :key="f.name" :class="'kind-' + f.kind">
+                <label>{{f.label}}</label>
+
+                <el-checkbox v-if="f.kind == 'bit' || f.kind == 'bool'" :value="current(f)"
+                    @change="commit(f, $event)">{{f.hint || 'Yes'}}</el-checkbox>
+
+                <select v-else-if="f.kind == 'chemical'" class="native-select"
+                    @change="commit(f, Number($event.target.value))">
+                    <option v-for="c in chemicals" :key="c.value" :value="c.value"
+                        :selected="c.value == current(f)">{{c.label}}</option>
+                </select>
+
+                <el-input v-else-if="f.kind == 'text'" size="small" :value="current(f)" :maxlength="f.length"
+                    @change="commit(f, $event)"></el-input>
+
+                <el-input-number v-else-if="f.kind == 'float'" size="small" controls-position="right"
+                    :value="current(f)" :min="0" :max="1" :step="0.01" :precision="3"
+                    @change="commit(f, $event)"></el-input-number>
+
+                <el-input-number v-else-if="f.kind == 'sfloat'" size="small" controls-position="right"
+                    :value="current(f)" :min="-1" :max="1" :step="0.01" :precision="3"
+                    @change="commit(f, $event)"></el-input-number>
+
+                <el-input-number v-else size="small" controls-position="right"
+                    :value="current(f)" :min="f.min" :max="f.max"
+                    @change="commit(f, $event)"></el-input-number>
+
+                <small class="hint" v-if="f.hint && f.kind != 'bit' && f.kind != 'bool'">{{f.hint}}</small>
+            </div>
+        </div>
+    </details>
+
+    <details class="editor" v-if="bodyBytes.length > 0">
+        <summary>Raw bytes <span class="muted">{{bodyBytes.length}} bytes after the header</span></summary>
+        <div class="raw-bytes">
+            <label class="raw-byte" v-for="(b, i) in bodyBytes" :key="i"
+                :title="'Byte ' + (i + 12) + ' of the gene, 0x' + b.toString(16)">
+                <small>{{i}}</small>
+                <input type="number" min="0" max="255" :value="b" @change="commitByte(i, $event.target.value)">
+            </label>
+        </div>
+    </details>
+</div>

@@ -1,21 +1,25 @@
-<article class="gene-card" :class="'kind-' + value.type">
+<article class="gene-card" :class="['kind-' + value.type, {modified : modified}]">
   <header class="gene-card-header">
     <span class="kind-bar"></span>
     <div class="gene-title">
       <div class="gene-name">
         <span class="badge">{{name || 'Gene'}}</span>
         <span class="gene-annotation" :class="{muted : !annotation}">{{annotation || 'No annotation'}}</span>
+        <span class="modified-pill" v-if="modified">Modified</span>
       </div>
       <div class="gene-meta">
         Id {{value.id}} &middot; Generation {{value.generation}} &middot; Type {{value.type}}.{{value.subtype}}
+        &middot; {{value.byteLength}} bytes
       </div>
     </div>
+    <button type="button" class="revert-btn" v-if="modified" @click="revert()"
+      title="Put this gene back to how it was loaded">Revert</button>
   </header>
 
   <div class="gene-controls">
     <div class="control">
       <label>Switch on</label>
-      <el-select v-model="value.age" size="small" placeholder="Select">
+      <el-select v-model="ageChoice" size="small" placeholder="Select">
         <el-option v-for="item in ageOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -23,7 +27,7 @@
 
     <div class="control">
       <label>Sex</label>
-      <el-radio-group v-model="value.sex" size="small">
+      <el-radio-group v-model="sexChoice" size="small">
         <el-radio-button label="Both">Both</el-radio-button>
         <el-radio-button label="Male">Male</el-radio-button>
         <el-radio-button label="Female">Female</el-radio-button>
@@ -32,19 +36,25 @@
 
     <div class="control">
       <label>Mutability</label>
-      <el-input-number v-model="value.mutability" size="small" controls-position="right" :min="0" :max="255" />
+      <el-input-number v-model="mutabilityValue" size="small" controls-position="right" :min="0" :max="255" />
     </div>
 
     <div class="control">
       <label>Flags</label>
       <div class="flags">
-        <el-checkbox v-model="duplicate">Can duplicate</el-checkbox>
-        <el-checkbox v-model="mutate">Can mutate</el-checkbox>
+        <el-checkbox v-model="duplicate" title="The gene may be duplicated when genomes are crossed">Can duplicate</el-checkbox>
+        <el-checkbox v-model="mutate" title="The gene may mutate">Can mutate</el-checkbox>
+        <el-checkbox v-model="cut" title="The gene may be lost when genomes are crossed">Can be cut</el-checkbox>
+        <el-checkbox v-model="ignored" title="The gene is carried on but never expressed">Not expressed</el-checkbox>
       </div>
     </div>
   </div>
 
   <div class="gene-body">
     <slot></slot>
+  </div>
+
+  <div class="gene-edit">
+    <gene-editor :gene="value"></gene-editor>
   </div>
 </article>

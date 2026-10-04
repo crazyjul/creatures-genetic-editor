@@ -15,6 +15,14 @@
 
 		<div class="topbar-spacer"></div>
 
+		<div class="edit-cluster" v-if="isValid">
+			<button type="button" class="icon-btn" :disabled="!canUndo" @click="undo()" title="Undo (Ctrl+Z)" aria-label="Undo">&#8630;</button>
+			<button type="button" class="icon-btn" :disabled="!canRedo" @click="redo()" title="Redo (Ctrl+Y)" aria-label="Redo">&#8631;</button>
+			<button type="button" class="btn" v-if="modifiedList.length > 0" @click="revertAll()" title="Put every gene back to how it was loaded">Revert all</button>
+			<button type="button" class="btn primary" :disabled="modifiedList.length == 0" @click="saveGenome()"
+				title="Save the genome with your changes (Ctrl+S)">Save genome<span class="save-count" v-if="modifiedList.length > 0">{{modifiedList.length}}</span></button>
+		</div>
+
 		<template v-if="isValid">
 			<div class="file-chip" title="Genome file">
 				<span>Genome</span><strong>{{file ? file.name : ''}}</strong>
@@ -58,11 +66,11 @@
 				<el-input v-model="search" size="small" clearable prefix-icon="el-icon-search"
 					placeholder="Search by description, id or #"></el-input>
 				<div class="chips">
-					<button type="button" v-for="kind in kinds" :key="kind.type" class="chip"
+					<button type="button" v-for="kind in kindChips" :key="kind.type" class="chip"
 						:class="{active : kindFilter == kind.type}" @click="kindFilter = kind.type">
 						<span v-if="kind.type != -1" class="dot" :class="'kind-' + kind.type"
 							style="margin-right:0"></span>
-						{{kind.label}} <span class="count">{{kindCount(kind.type)}}</span>
+						{{kind.label}} <span class="count">{{kind.count}}</span>
 					</button>
 				</div>
 				<div class="kbd-hint">
@@ -75,11 +83,11 @@
 					<button type="button" class="stage all" :class="{active : ageFilter == ''}" @click="ageFilter = ''">
 						<span class="stage-name">All</span>
 					</button>
-					<button type="button" v-for="age in ages" :key="age.value" class="stage"
-						:class="{active : ageFilter == age.value, empty : ageCount(age.value) == 0}"
+					<button type="button" v-for="age in ageStages" :key="age.value" class="stage"
+						:class="{active : ageFilter == age.value, empty : age.count == 0}"
 						@click="ageFilter = ageFilter == age.value ? '' : age.value">
-						<span class="stage-bar"><i :style="{height : ageShare(age.value) + '%'}"></i></span>
-						<span class="stage-count">{{ageCount(age.value)}}</span>
+						<span class="stage-bar"><i :style="{height : age.share + '%'}"></i></span>
+						<span class="stage-count">{{age.count}}</span>
 						<span class="stage-name">{{age.label}}</span>
 					</button>
 				</div>
@@ -109,7 +117,7 @@
 							</tr>
 							<tr v-else :key="item.key" :data-key="item.key" @click="selectRow(item)"
 								:class="['kind-' + item.gene.type, {selected : isSelected(item.gene), cursor : item.key == cursorKey}]">
-								<td class="muted">{{item.index}}</td>
+								<td class="muted">{{item.index}}<i class="mod-dot" v-if="isModified(item.index)" title="Modified"></i></td>
 								<td class="description" :title="describe(item.gene)"><span class="dot"></span>{{describe(item.gene)}}</td>
 								<td>{{item.gene.id}}</td>
 								<td>{{item.gene.generation}}</td>

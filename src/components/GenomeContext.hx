@@ -1,6 +1,7 @@
 package components;
 
 import creatures.Genome;
+import creatures.gene.Gene;
 import creatures.gene.LobeGene;
 import creatures.gene.PoseGene;
 import creatures.gene.notes.GenomeNotes;
@@ -12,8 +13,41 @@ import creatures.gene.notes.GenomeNotes;
 class GenomeContext {
     static var lobes = new Map<Int, String>();
     static var poses = new Map<Int, String>();
+    static var current : Genome;
+
+    /**
+     * Set by the app. A panel that wants to change a gene calls edit() with the change instead of making it
+     * itself, so that the app can record an undo step, rebuild the gene and refresh what shows it.
+     * The key groups quick successive edits of one value (dragging a number) into a single undo step.
+     */
+    public static var onEdit : Gene -> (Void -> Void) -> String -> Void;
+    public static var onRevert : Gene -> Void;
+
+    public static function edit(gene : Gene, change : Void -> Void, ?key : String) : Void {
+        if(onEdit != null) {
+            onEdit(gene, change, key);
+        }
+    }
+
+    public static function revert(gene : Gene) : Void {
+        if(onRevert != null) {
+            onRevert(gene);
+        }
+    }
+
+    /** Whether the gene differs from the loaded genome. */
+    public static function isModified(gene : Gene) : Bool {
+        if(current == null) {
+            return false;
+        }
+
+        var index = current.genes.indexOf(gene);
+
+        return index != -1 && current.isModified(index);
+    }
 
     public static function update(genome : Genome, notes : GenomeNotes) : Void {
+        current = genome;
         lobes = new Map<Int, String>();
         poses = new Map<Int, String>();
 

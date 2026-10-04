@@ -26,6 +26,7 @@ class App extends VComponent<AppData, NoneT> {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
             view : "genes", compare : false, theme : "light", cursorKey : "",
+            editVersion : 0, lastEditKey : "", lastEditTime : 0.0, ignoreFileChange : false,
             chemical : -1, chemicalSearch : "", usedOnly : true, copied : "",
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
@@ -71,10 +72,179 @@ class App extends VComponent<AppData, NoneT> {
         }
 
         applyTheme();
+
+        components.GenomeContext.onEdit = applyEdit;
+        components.GenomeContext.onRevert = revertGene;
     }
 
     override function Mounted() : Void {
         js.Browser.document.addEventListener("keydown", onKeyDown);
+
+        // Closing the page would lose the edits, so the browser is asked to confirm.
+        js.Browser.window.addEventListener("beforeunload", function(event : js.html.Event) {
+            if(genome != null && genome.isModifiedAtAll()) {
+                event.preventDefault();
+                untyped event.returnValue = "";
+            }
+        });
+    }
+
+    // ---------- editing ----------
+
+    /**
+     * A gene is being changed through GenomeContext.edit. If the change alters the bytes, the state before it
+     * is recorded for undo, then the gene is rebuilt from the genome's bytes and put in the lists in place of
+     * the old one: a new object is what makes everything that shows the gene (list, cards, map, chemicals)
+     * refresh. Quick edits with the same key (dragging a number) share one undo step.
+     */
+    function applyEdit(gene : Gene, change : Void -> Void, key : String) : Void {
+        if(genome == null) {
+            return;
+        }
+
+        var index = genes.indexOf(gene);
+
+        if(index == -1) {
+            return;
+        }
+
+        var before = genome.toBytes();
+        freeze(before);
+
+        change();
+
+        // Controls can report a value they already had (a number box does so when it appears). Nothing
+        // changed then, so there is nothing to undo and nothing to refresh.
+        if(genome.toBytes().compare(before) == 0) {
+            return;
+        }
+
+        var now = Date.now().getTime();
+
+        if(key == null || key != lastEditKey || now - lastEditTime > 1500) {
+            genome.recordUndo(before);
+        }
+
+        lastEditKey = key;
+        lastEditTime = now;
+
+        swapGene(index);
+        afterEdit();
+    }
+
+    /** Rebuilds the gene at this position and puts it in place of the old object everywhere it is held. */
+    function swapGene(index : Int) : Void {
+        var old = genes[index];
+        var fresh = genome.refresh(index);
+
+        // splice, because Vue only notices changes made through the array's own methods
+        replaceIn(genes, index, fresh);
+
+        var selected = selectedGenes.indexOf(old);
+
+        if(selected != -1) {
+            replaceIn(selectedGenes, selected, fresh);
+        }
+    }
+
+    static function replaceIn(list : Array<Gene>, position : Int, gene : Gene) : Void {
+        js.Syntax.code("{0}.splice({1}, 1, {2})", list, position, gene);
+    }
+
+    function afterEdit() : Void {
+        editVersion++;
+        components.GenomeContext.update(genome, genomeNotes);
+    }
+
+    function undo() : Void {
+        if(genome == null) {
+            return;
+        }
+
+        for(index in genome.undo()) {
+            swapGene(index);
+        }
+
+        lastEditKey = "";
+        afterEdit();
+    }
+
+    function redo() : Void {
+        if(genome == null) {
+            return;
+        }
+
+        for(index in genome.redo()) {
+            swapGene(index);
+        }
+
+        lastEditKey = "";
+        afterEdit();
+    }
+
+    function revertGene(gene : Gene) : Void {
+        var index = genes.indexOf(gene);
+
+        if(genome == null || index == -1) {
+            return;
+        }
+
+        for(changed in genome.revert(index)) {
+            swapGene(changed);
+        }
+
+        lastEditKey = "";
+        afterEdit();
+    }
+
+    function revertAll() : Void {
+        if(genome == null || !js.Browser.window.confirm("Put every gene back to how it was loaded?")) {
+            return;
+        }
+
+        for(changed in genome.revertAll()) {
+            swapGene(changed);
+        }
+
+        lastEditKey = "";
+        afterEdit();
+    }
+
+    /** The genome with the edits, as a file named after the one that was opened. */
+    function saveGenome() : Void {
+        if(genome == null) {
+            return;
+        }
+
+        var name = file != null ? file.name : "genome.gen";
+        var dot = name.lastIndexOf(".");
+        var saved = dot > 0 ? name.substr(0, dot) + "-edited" + name.substr(dot) : name + "-edited";
+
+        components.GeneExport.downloadBytes(saved, genome.toBytes());
+    }
+
+    var modifiedList(get, never):Array<Int>;
+
+    /** Positions of the genes that differ from the loaded genome. */
+    function get_modifiedList() : Array<Int> {
+        // editVersion is read so that the list is worked out again after every edit
+        return genome != null && editVersion >= 0 ? genome.modifiedGenes() : [];
+    }
+
+    var canUndo(get, never):Bool;
+
+    function get_canUndo() : Bool {
+        return genome != null && editVersion >= 0 && genome.canUndo();
+    }
+
+    var canRedo(get, never):Bool;
+
+    function get_canRedo() : Bool {
+        return genome != null && editVersion >= 0 && genome.canRedo();
+    }
+
+    function isModified(index : Int) : Bool {
+        return modifiedList.indexOf(index) != -1;
     }
 
     /**
@@ -82,13 +252,35 @@ class App extends VComponent<AppData, NoneT> {
      * Escape clears the search. Ignored while typing in a field, or with a modifier held.
      */
     function onKeyDown(event : js.html.KeyboardEvent) : Void {
-        if(event.ctrlKey || event.metaKey || event.altKey) {
-            return;
-        }
-
         var target : js.html.Element = cast event.target;
         var tag = target != null ? target.tagName : "";
         var typing = tag == "INPUT" || tag == "TEXTAREA" || tag == "SELECT" || (target != null && target.isContentEditable);
+
+        // Ctrl+Z undoes, Ctrl+Y or Ctrl+Shift+Z redoes, Ctrl+S saves. Inside a field the browser keeps its own undo.
+        if(event.ctrlKey || event.metaKey) {
+            var letter = event.key.toLowerCase();
+
+            if(isValid && !typing) {
+                if(letter == "z" && !event.shiftKey) {
+                    event.preventDefault();
+                    undo();
+                } else if(letter == "y" || (letter == "z" && event.shiftKey)) {
+                    event.preventDefault();
+                    redo();
+                }
+            }
+
+            if(isValid && letter == "s") {
+                event.preventDefault();
+                saveGenome();
+            }
+
+            return;
+        }
+
+        if(event.altKey) {
+            return;
+        }
 
         if(event.key == "Escape") {
             if(search != "") {
@@ -347,29 +539,65 @@ class App extends VComponent<AppData, NoneT> {
         return cast gene.age;
     }
 
-    /** Genes switching on at the given life stage, among those passing the kind and search filters. */
-    function ageCount(age : String) : Int {
+    // The counts below are computed properties, not methods called from the template: a template method
+    // that loops over every gene registers a dependency for each read, and the timeline alone did that
+    // about 70 times per render. A computed property is worked out once, when the genes or filters change.
+
+    /**
+     * The life stages with the number of genes switching on then (among those passing the kind and
+     * search filters) and the height of each bar as a percentage of the busiest stage.
+     */
+    var ageStages(get, never):Array<AgeStage>;
+
+    function get_ageStages() : Array<AgeStage> {
         var needle = search.toLowerCase();
-        var count = 0;
+        var counts = new Map<String, Int>();
+
+        for(stage in ages) {
+            counts[stage.value] = 0;
+        }
 
         for(i in 0...genes.length) {
-            if(ageOf(genes[i]) == age && matchesKindAndSearch(genes[i], i, needle)) {
-                ++count;
+            var gene = genes[i];
+
+            if(matchesKindAndSearch(gene, i, needle)) {
+                var age = ageOf(gene);
+
+                if(counts.exists(age)) {
+                    counts[age] += 1;
+                }
             }
         }
 
-        return count;
-    }
-
-    /** Height of a life stage's bar, as a percentage of the busiest stage. */
-    function ageShare(age : String) : Float {
         var most = 0;
 
         for(stage in ages) {
-            most = Std.int(Math.max(most, ageCount(stage.value)));
+            most = Std.int(Math.max(most, counts[stage.value]));
         }
 
-        return most == 0 ? 0 : ageCount(age) * 100.0 / most;
+        return [for(stage in ages) {
+            value : stage.value,
+            label : stage.label,
+            count : counts[stage.value],
+            share : most == 0 ? 0.0 : counts[stage.value] * 100.0 / most
+        }];
+    }
+
+    /** The kind filter chips with the number of genes of each kind. */
+    var kindChips(get, never):Array<KindChip>;
+
+    function get_kindChips() : Array<KindChip> {
+        var counts = new Map<Int, Int>();
+
+        for(gene in genes) {
+            counts[gene.type] = counts.exists(gene.type) ? counts[gene.type] + 1 : 1;
+        }
+
+        return [for(kind in kinds) {
+            type : kind.type,
+            label : kind.label,
+            count : kind.type == -1 ? genes.length : (counts.exists(kind.type) ? counts[kind.type] : 0)
+        }];
     }
 
     static var CreatureKinds = [
@@ -493,22 +721,6 @@ class App extends VComponent<AppData, NoneT> {
         return untyped gene.getName();
     }
 
-    function kindCount(type : Int) : Int {
-        if(type == -1) {
-            return genes.length;
-        }
-
-        var count = 0;
-
-        for(gene in genes) {
-            if(gene.type == type) {
-                ++count;
-            }
-        }
-
-        return count;
-    }
-
     function clearSelection() {
         selectedGenes = [];
     }
@@ -557,8 +769,26 @@ class App extends VComponent<AppData, NoneT> {
         return selectedGenes.indexOf(item) != -1;
     }
 
+    /** Stops Vue from making the object reactive. Only the object itself is frozen, not what it refers to. */
+    static function freeze(thing : Dynamic) : Void {
+        js.Syntax.code("Object.freeze({0})", thing);
+    }
+
     @:watch(file) function fileChanged(newValue:js.html.File, oldValue:js.html.File):Void {
+        if(ignoreFileChange) {
+            // This is the change made below to put the old file back.
+            ignoreFileChange = false;
+            return;
+        }
+
         if(file == null) {
+            return;
+        }
+
+        if(genome != null && genome.isModifiedAtAll()
+            && !js.Browser.window.confirm("This genome has unsaved changes. Open another genome and lose them?")) {
+            ignoreFileChange = true;
+            file = oldValue;
             return;
         }
 
@@ -574,8 +804,16 @@ class App extends VComponent<AppData, NoneT> {
             cursorKey = "";
             chemical = -1;
             collapsed = [];
+            lastEditKey = "";
+            editVersion++;
             view = "genes";
-            genome = new creatures.Genome(bytes);
+
+            // The bytes change, but not in a way Vue could follow (it only sees properties being assigned);
+            // the app refreshes by replacing gene objects instead. Freezing keeps Vue from wrapping them.
+            freeze(bytes);
+            var loaded = new creatures.Genome(bytes);
+            freeze(untyped loaded._original);
+            genome = loaded;
             components.GenomeContext.update(genome, genomeNotes);
         }
         reader.onerror = function(event) {
@@ -593,8 +831,13 @@ class App extends VComponent<AppData, NoneT> {
         reader.onload =  function(event) {
             var buffer : js.html.ArrayBuffer = event.target.result;
             var bytes =  haxe.io.Bytes.ofData(buffer);
-            genomeNotes = new creatures.gene.notes.GenomeNotes();
-            genomeNotes.load(bytes);
+            var loaded = new creatures.gene.notes.GenomeNotes();
+            loaded.load(bytes);
+
+            // Notes never change after loading, and lookups happen for every row of every render, so Vue
+            // must not wrap the 1800 notes and the tree that indexes them.
+            freeze(loaded);
+            genomeNotes = loaded;
             components.GenomeContext.update(genome, genomeNotes);
         }
         reader.onerror = function(event) {
@@ -613,6 +856,11 @@ typedef AppData = {
     var compare: Bool;
     var theme: String;
     var cursorKey: String;
+    /** Goes up with every change to the genome, so that what depends on its bytes is worked out again. */
+    var editVersion: Int;
+    var lastEditKey: String;
+    var lastEditTime: Float;
+    var ignoreFileChange: Bool;
     var copied: String;
     var chemical: Int;
     var chemicalSearch: String;
@@ -629,6 +877,19 @@ typedef AppData = {
 typedef GeneRow = {
     var index: Int;
     var gene: Gene;
+}
+
+typedef AgeStage = {
+    var value: String;
+    var label: String;
+    var count: Int;
+    var share: Float;
+}
+
+typedef KindChip = {
+    var type: Int;
+    var label: String;
+    var count: Int;
 }
 
 typedef ChemicalRow = {
