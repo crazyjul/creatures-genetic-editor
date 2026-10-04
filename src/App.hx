@@ -25,6 +25,7 @@ class App extends VComponent<AppData, NoneT> {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
             view : "genes",
+            grouped : false, collapsed : [],
             search : "", kindFilter : -1,
             kinds : [
                 { type : -1, label : "All" },
@@ -94,6 +95,109 @@ class App extends VComponent<AppData, NoneT> {
         return result;
     }
 
+    static var CreatureKinds = [
+        "Stimuli", "Species", "Appearance", "Poses", "Gaits", "Instincts", "Pigments", "Pigment bleeds", "Expressions"
+    ];
+
+    /**
+     * Every gene belongs to one group. Receptors, emitters and reactions belong to the organ gene that
+     * precedes them; the other genes are grouped by kind. Groups are listed in order of first appearance.
+     */
+    function buildGroups() : Array<GeneGroup> {
+        var groups = new Array<GeneGroup>();
+        var byKey = new Map<String, GeneGroup>();
+        var currentOrgan : GeneGroup = null;
+
+        function group(key : String, label : String) : GeneGroup {
+            var found = byKey[key];
+
+            if(found == null) {
+                found = { key : key, label : label, members : [] };
+                byKey[key] = found;
+                groups.push(found);
+            }
+
+            return found;
+        }
+
+        for(i in 0...genes.length) {
+            var gene = genes[i];
+            var target : GeneGroup;
+
+            if(gene.type == 3) {
+                currentOrgan = group("organ-" + i, describe(gene));
+                target = currentOrgan;
+            } else if(gene.type == 1 && gene.subtype <= 2) {
+                target = currentOrgan != null ? currentOrgan : group("biochemistry", "Biochemistry");
+            } else if(gene.type == 1) {
+                target = group("biochemistry-global", "Biochemistry: half lives, concentrations, neuro emitters");
+            } else if(gene.type == 0) {
+                target = group("brain", "Brain");
+            } else if(gene.type == 2) {
+                var kind = gene.subtype < CreatureKinds.length ? CreatureKinds[gene.subtype] : "Other";
+                target = group("creature-" + gene.subtype, "Creature: " + kind);
+            } else {
+                target = group("other", "Other");
+            }
+
+            target.members.push({ index : i, gene : gene });
+        }
+
+        return groups;
+    }
+
+    var items(get, never):Array<ListItem>;
+
+    function get_items() : Array<ListItem> {
+        var matching = new Map<Int, Bool>();
+
+        for(row in rows) {
+            matching[row.index] = true;
+        }
+
+        if(!grouped) {
+            return [for(row in rows) { key : "g" + row.index, isGroup : false, groupKey : "", label : "", count : 0, open : true, index : row.index, gene : row.gene }];
+        }
+
+        var result = [];
+        var searching = search != "";
+
+        for(group in buildGroups()) {
+            var visible = group.members.filter(function(m) return matching.exists(m.index));
+
+            if(visible.length == 0) {
+                continue;
+            }
+
+            var open = searching || collapsed.indexOf(group.key) == -1;
+            result.push({ key : "h-" + group.key, isGroup : true, groupKey : group.key, label : group.label, count : visible.length, open : open, index : -1, gene : null });
+
+            if(open) {
+                for(m in visible) {
+                    result.push({ key : "g" + m.index, isGroup : false, groupKey : group.key, label : "", count : 0, open : true, index : m.index, gene : m.gene });
+                }
+            }
+        }
+
+        return result;
+    }
+
+    function toggleGroup(key : String) {
+        if(collapsed.indexOf(key) == -1) {
+            collapsed.push(key);
+        } else {
+            collapsed.remove(key);
+        }
+    }
+
+    function collapseAll() {
+        collapsed = [for(group in buildGroups()) group.key];
+    }
+
+    function expandAll() {
+        collapsed = [];
+    }
+
     function matches(gene : Gene, index : Int, needle : String) : Bool {
         return describe(gene).toLowerCase().indexOf(needle) != -1
             || Std.string(gene.id) == needle
@@ -159,6 +263,7 @@ class App extends VComponent<AppData, NoneT> {
             selectedGenes = [];
             search = "";
             kindFilter = -1;
+            collapsed = [];
             view = "genes";
             genome = new creatures.Genome(bytes);
         }
@@ -193,12 +298,32 @@ typedef AppData = {
     var genomeNotes: creatures.gene.notes.GenomeNotes;
     var selectedGenes: Array<creatures.gene.Gene>;
     var view: String;
+    var grouped: Bool;
+    var collapsed: Array<String>;
     var search: String;
     var kindFilter: Int;
     var kinds: Array<Dynamic>;
 }
 
 typedef GeneRow = {
+    var index: Int;
+    var gene: Gene;
+}
+
+typedef GeneGroup = {
+    var key: String;
+    var label: String;
+    var members: Array<GeneRow>;
+}
+
+/** A table line: either a gene or, when the list is grouped, a group header. */
+typedef ListItem = {
+    var key: String;
+    var isGroup: Bool;
+    var groupKey: String;
+    var label: String;
+    var count: Int;
+    var open: Bool;
     var index: Int;
     var gene: Gene;
 }

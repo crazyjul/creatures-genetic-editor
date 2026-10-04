@@ -447,3 +447,49 @@ html, body {
     opacity: .45;
     cursor: not-allowed;
 }
+
+/* ---------- grouped list ---------- */
+
+.segmented.small button {
+    padding: .15rem .65rem;
+    font-size: .78rem;
+}
+
+.btn.small {
+    padding: .2rem .6rem;
+    font-size: .78rem;
+}
+
+.genome-table tr.group-row {
+    background: var(--surface-alt);
+}
+
+.genome-table tr.group-row td {
+    position: sticky;
+    top: 31px;
+    z-index: 1;
+    padding: .4rem .6rem;
+    background: var(--surface-alt);
+    font-weight: 600;
+    white-space: normal;
+}
+
+.genome-table tr.group-row:hover td {
+    background: var(--accent-soft);
+}
+
+.group-row .chevron {
+    display: inline-block;
+    width: 1rem;
+    color: var(--text-muted);
+}
+
+.group-row .group-count {
+    margin-left: .5rem;
+    padding: .05rem .5rem;
+    border-radius: 999px;
+    background: var(--border);
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+}

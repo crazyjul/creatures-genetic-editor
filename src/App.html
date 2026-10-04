@@ -41,6 +41,14 @@
 		<section class="pane" v-else>
 			<div class="pane-header">
 				<div class="pane-title">Genes<small>{{rows.length}} of {{genes.length}}</small></div>
+					<template v-if="grouped">
+						<button type="button" class="btn small" @click="expandAll()">Expand all</button>
+						<button type="button" class="btn small" @click="collapseAll()">Collapse all</button>
+					</template>
+					<div class="segmented small">
+						<button type="button" :class="{active : !grouped}" @click="grouped = false">Flat</button>
+						<button type="button" :class="{active : grouped}" @click="grouped = true">By organ</button>
+					</div>
 			</div>
 			<div class="toolbar">
 				<el-input v-model="search" size="small" clearable prefix-icon="el-icon-search"
@@ -68,16 +76,26 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="row in rows" :key="row.index" @click="toggleGeneSelection(row.gene)"
-							:class="['kind-' + row.gene.type, {selected : isSelected(row.gene)}]">
-							<td class="muted">{{row.index}}</td>
-							<td class="description" :title="describe(row.gene)"><span class="dot"></span>{{describe(row.gene)}}</td>
-							<td>{{row.gene.id}}</td>
-							<td>{{row.gene.generation}}</td>
-							<td>{{row.gene.age}}</td>
-							<td>{{row.gene.sex}}</td>
-							<td class="muted">{{row.gene.mutability | to_string}}</td>
-						</tr>
+						<template v-for="item in items">
+							<tr v-if="item.isGroup" :key="item.key" class="group-row" :class="{closed : !item.open}"
+								@click="toggleGroup(item.groupKey)">
+								<td colspan="7">
+									<span class="chevron">{{item.open ? '&#9662;' : '&#9656;'}}</span>
+									<span class="group-label">{{item.label}}</span>
+									<span class="group-count">{{item.count}}</span>
+								</td>
+							</tr>
+							<tr v-else :key="item.key" @click="toggleGeneSelection(item.gene)"
+								:class="['kind-' + item.gene.type, {selected : isSelected(item.gene)}]">
+								<td class="muted">{{item.index}}</td>
+								<td class="description" :title="describe(item.gene)"><span class="dot"></span>{{describe(item.gene)}}</td>
+								<td>{{item.gene.id}}</td>
+								<td>{{item.gene.generation}}</td>
+								<td>{{item.gene.age}}</td>
+								<td>{{item.gene.sex}}</td>
+								<td class="muted">{{item.gene.mutability | to_string}}</td>
+							</tr>
+						</template>
 					</tbody>
 				</table>
 				<div class="empty" v-else>
