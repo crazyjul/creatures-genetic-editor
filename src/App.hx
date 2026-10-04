@@ -266,6 +266,7 @@ class App extends VComponent<AppData, NoneT> {
             collapsed = [];
             view = "genes";
             genome = new creatures.Genome(bytes);
+            components.GenomeContext.update(genome, genomeNotes);
         }
         reader.onerror = function(event) {
             trace(event);
@@ -284,6 +285,7 @@ class App extends VComponent<AppData, NoneT> {
             var bytes =  haxe.io.Bytes.ofData(buffer);
             genomeNotes = new creatures.gene.notes.GenomeNotes();
             genomeNotes.load(bytes);
+            components.GenomeContext.update(genome, genomeNotes);
         }
         reader.onerror = function(event) {
             trace(event);

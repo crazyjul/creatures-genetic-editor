@@ -4,8 +4,10 @@
     </div>
     <div class="label-row">Pose sequence</div>
     <div class="pose-chips">
-        <span class="pose-chip" v-for="(pose, i) in value.poses" :key="i" :class="{unused : pose == 0}">
+        <span class="pose-chip" v-for="(pose, i) in value.poses" :key="i" :class="{unused : pose == 0}"
+            :title="poseLabel(pose)">
             <small>{{i + 1}}</small>{{pose == 0 ? '-' : pose}}
+            <small class="pose-name" v-if="pose != 0 && poseLabel(pose)">{{poseLabel(pose)}}</small>
         </span>
     </div>
 </gene-header>

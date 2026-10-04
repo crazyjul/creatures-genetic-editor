@@ -2,7 +2,7 @@
     <div class="instinct-inputs">
         <div class="instinct-input" v-for="(input, i) in value.inputs" :key="i" :class="{unused : input.lobeTissueId == -1}">
             <span class="label">Neuron {{i + 1}}</span>
-            <span class="value" v-if="input.lobeTissueId != -1">lobe tissue {{input.lobeTissueId}} &middot; neuron {{input.neuron}}</span>
+            <span class="value" v-if="input.lobeTissueId != -1">{{lobeLabel(input.lobeTissueId)}} &middot; neuron {{input.neuron}}</span>
             <span class="value" v-else>unused</span>
         </div>
     </div>

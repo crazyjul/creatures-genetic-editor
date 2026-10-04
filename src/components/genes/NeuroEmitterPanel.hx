@@ -17,6 +17,10 @@ class NeuroEmitterPanel extends VComponent<NoneT, Props> {
     override public function Template() {
         return Webpack.require('./NeuroEmitterPanel.html');
     }
+
+    function lobeLabel(tissue : Int) : String {
+        return GenomeContext.lobeLabel(tissue);
+    }
 }
 
 private typedef Props = {

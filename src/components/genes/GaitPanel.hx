@@ -17,6 +17,10 @@ class GaitPanel extends VComponent<NoneT, Props> {
     override public function Template() {
         return Webpack.require('./GaitPanel.html');
     }
+
+    function poseLabel(number : Int) : String {
+        return GenomeContext.poseLabel(number);
+    }
 }
 
 private typedef Props = {
