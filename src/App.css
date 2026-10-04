@@ -372,9 +372,62 @@ html, body {
 /* ---------- responsive ---------- */
 
 @media (max-width: 960px) {
+    /* Stacked layout: the page scrolls, the list keeps a fixed height and the selection takes what it needs. */
+    html, body, #app, .app {
+        height: auto;
+        min-height: 100%;
+    }
+
     .workspace {
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(260px, 1fr) minmax(260px, 1fr);
+        grid-template-rows: minmax(420px, 75vh) auto;
+    }
+
+    .workspace .pane:nth-child(2) {
+        overflow: visible;
+    }
+
+    .workspace .pane:nth-child(2) .pane-body {
+        overflow: visible;
+    }
+}
+
+@media (max-width: 640px) {
+    .topbar {
+        padding: .6rem .8rem;
+    }
+
+    /* The file names are not needed on a phone; the view switch gets the full width. */
+    .topbar .file-chip {
+        display: none;
+    }
+
+    .topbar .segmented {
+        order: 5;
+        flex: 1 0 100%;
+    }
+
+    .topbar .segmented button {
+        flex: 1;
+    }
+
+    .topbar-spacer {
+        flex: 1;
+    }
+
+    .workspace {
+        padding: .6rem;
+        gap: .6rem;
+    }
+
+    /* Keep the number, description and id; the rest is on the gene's card. */
+    .genome-table:not(.chemical-table) th:nth-child(n + 4),
+    .genome-table:not(.chemical-table) td:nth-child(n + 4) {
+        display: none;
+    }
+
+    .toolbar .kbd-hint {
+        display: none;
     }
 }
 
@@ -859,3 +912,8 @@ html, body {
 :root[data-theme="dark"] .use-role.role-reactant { background: #4a2a12; color: #fdba74; }
 :root[data-theme="dark"] .use-role.role-product { background: #103a26; color: #6ee7b7; }
 :root[data-theme="dark"] .use-role.role-emitter { background: #4a1840; color: #f0abfc; }
+
+/* A grid item grows to fit its content unless told otherwise, which would push wide tables past the screen. */
+.workspace > .pane {
+    min-width: 0;
+}
