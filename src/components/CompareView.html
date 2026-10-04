@@ -1,0 +1,27 @@
+<div class="compare">
+    <div class="compare-options">
+        <el-checkbox v-model="onlyDifferences">Only show differences</el-checkbox>
+        <span class="muted">{{rows.length}} fields</span>
+    </div>
+
+    <div class="compare-scroll">
+        <table class="compare-table" v-if="rows.length > 0">
+            <thead>
+                <tr>
+                    <th class="corner"></th>
+                    <th v-for="(label, i) in labels" :key="i" :title="label">{{label}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="row in rows" :key="row.name" :class="{differs : row.differs}">
+                    <th>{{row.label}}</th>
+                    <td v-for="(value, i) in row.values" :key="i" :class="{missing : value == '-'}">{{value}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="empty" v-else>
+            <div class="emoji">&#10003;</div>
+            <div>The selected genes have identical values.</div>
+        </div>
+    </div>
+</div>

@@ -120,10 +120,16 @@
 		<section class="pane">
 			<div class="pane-header">
 				<div class="pane-title">Selected genes<small v-if="selectedGenes.length > 0">{{selectedGenes.length}}</small></div>
-				<button type="button" class="btn" v-if="selectedGenes.length > 0" @click="clearSelection()">Clear selection</button>
+				<div class="segmented small" v-if="selectedGenes.length > 1">
+						<button type="button" :class="{active : !compare}" @click="compare = false">Cards</button>
+						<button type="button" :class="{active : compare}" @click="compare = true">Compare</button>
+					</div>
+					<button type="button" class="btn" v-if="selectedGenes.length > 0" @click="clearSelection()">Clear selection</button>
 			</div>
 			<div class="pane-body">
-				<div class="details" v-if="selectedGenes.length > 0">
+				<compare-view v-if="compare && selectedGenes.length > 1" :genes="selectedGenes"
+						:labels="selectedLabels"></compare-view>
+					<div class="details" v-else-if="selectedGenes.length > 0">
 					<gene-view v-model="selectedGenes" :notes="genomeNotes"/>
 				</div>
 				<div class="empty" v-else>

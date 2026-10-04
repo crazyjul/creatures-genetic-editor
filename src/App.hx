@@ -17,14 +17,15 @@ class App extends VComponent<AppData, NoneT> {
         return [
             "file-select" => new components.FileSelect(),
             "gene-view" => new GeneView(),
-            "brain-map" => new components.BrainMap()
+            "brain-map" => new components.BrainMap(),
+            "compare-view" => new components.CompareView()
         ];
     }
 
     override public function Data() :  AppData {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
-            view : "genes",
+            view : "genes", compare : false,
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
             ages : [
@@ -282,6 +283,12 @@ class App extends VComponent<AppData, NoneT> {
         selectedGenes = [];
     }
 
+    var selectedLabels(get, never):Array<String>;
+
+    function get_selectedLabels() : Array<String> {
+        return [for(gene in selectedGenes) describe(gene)];
+    }
+
     function toggleGeneSelection(selected : Gene) {
         var gene_index = selectedGenes.indexOf(selected);
 
@@ -347,6 +354,7 @@ typedef AppData = {
     var genomeNotes: creatures.gene.notes.GenomeNotes;
     var selectedGenes: Array<creatures.gene.Gene>;
     var view: String;
+    var compare: Bool;
     var grouped: Bool;
     var collapsed: Array<String>;
     var search: String;
