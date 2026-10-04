@@ -4,6 +4,6 @@
         <div class="field"><span class="label">Noun stimulation</span><span class="value">{{value.nounStimulation}}</span></div>
         <div class="field"><span class="label">Verb to stimulate</span><span class="value">{{value.verbToStimulate}}</span></div>
         <div class="field"><span class="label">Flags</span><span class="value">{{value.stimulusFlags}}</span></div>
-        <div class="field" v-for="(chemical, index) in value.chemicals" :key="index"><span class="label">Chemical {{chemical}}</span><span class="value">{{value.adjustments[index] | num}}</span></div>
+        <div class="field" v-for="(chemical, index) in value.chemicals" :key="index"><span class="label">{{chemical | chem}}</span><span class="value">{{value.adjustments[index] | num}}</span></div>
     </div>
 </gene-header>

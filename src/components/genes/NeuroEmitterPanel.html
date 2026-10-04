@@ -13,7 +13,7 @@
 
     <div class="emissions">
         <div class="emission" v-for="(emission, i) in value.emissions" :key="i" v-if="emission.chemical != 0">
-            <span class="label">Chemical {{emission.chemical}}</span>
+            <span class="label">{{emission.chemical | chem}}</span>
             <div class="bar"><div class="bar-fill" :style="{width : emission.amount * 100 + '%'}"></div></div>
             <span class="value">{{emission.amount | num}}</span>
         </div>

@@ -41,7 +41,7 @@ class HalfLifePanel extends VComponent<NoneT, Props> {
             x : i * 2.0,
             height : Math.max(1.0, rates[i] / MaxRate * ChartHeight),
             instant : rates[i] == 0,
-            title : "Chemical " + i + ": " + (rates[i] == 0 ? "vanishes at once" : "half life " + ticks(halfLives[i]) + " ticks")
+            title : creatures.Chemicals.label(i) + ": " + (rates[i] == 0 ? "vanishes at once" : "half life " + ticks(halfLives[i]) + " ticks")
         }];
     }
 

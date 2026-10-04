@@ -4,7 +4,7 @@
             <template v-if="value.reactants.length > 0">
                 <template v-for="(term, i) in value.reactants">
                     <span class="reaction-plus" v-if="i > 0" :key="'rp' + i">+</span>
-                    <span class="reaction-term" :key="'r' + i"><b>{{term.proportion}}&times;</b> chem {{term.chemical}}</span>
+                    <span class="reaction-term" :key="'r' + i"><b>{{term.proportion}}&times;</b> {{term.chemical | chem}}</span>
                 </template>
             </template>
             <span class="reaction-term none" v-else>nothing</span>
@@ -19,7 +19,7 @@
             <template v-if="value.products.length > 0">
                 <template v-for="(term, i) in value.products">
                     <span class="reaction-plus" v-if="i > 0" :key="'pp' + i">+</span>
-                    <span class="reaction-term" :key="'p' + i"><b>{{term.proportion}}&times;</b> chem {{term.chemical}}</span>
+                    <span class="reaction-term" :key="'p' + i"><b>{{term.proportion}}&times;</b> {{term.chemical | chem}}</span>
                 </template>
             </template>
             <span class="reaction-term none" v-else>nothing</span>

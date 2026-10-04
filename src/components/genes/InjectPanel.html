@@ -1,6 +1,6 @@
 <gene-header v-model="value" name="Inject" :notes="notes">
     <div class="fields">
-        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical}}</span></div>
+        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical | chem}}</span></div>
         <div class="field"><span class="label">Initial concentration</span><span class="value">{{value.initialConcentration | num}}</span></div>
     </div>
 </gene-header>

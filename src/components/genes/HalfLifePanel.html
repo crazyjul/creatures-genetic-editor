@@ -2,7 +2,7 @@
     <div class="fields">
         <div class="field"><span class="label">Chemicals</span><span class="value">{{value.decayRates.length}}</span></div>
         <div class="field"><span class="label">Vanish at once</span><span class="value">{{instantCount}}</span></div>
-        <div class="field"><span class="label">Longest lasting</span><span class="value">chem {{slowest}} <span class="muted">({{ticks(value.halfLives[slowest])}} ticks)</span></span></div>
+        <div class="field"><span class="label">Longest lasting</span><span class="value">{{slowest | chem}} <span class="muted">({{ticks(value.halfLives[slowest])}} ticks)</span></span></div>
     </div>
 
     <div class="label-row">Half life of every chemical <span class="muted">(taller lasts longer, log scale)</span></div>

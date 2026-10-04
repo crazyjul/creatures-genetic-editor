@@ -22,6 +22,11 @@ class Main {
             return Std.string(a);
         });
 
+        // A chemical number as its name: 12 becomes "Protein (12)".
+        Vue.filter('chem', function(a:Int) {
+            return creatures.Chemicals.label(a);
+        });
+
         new Vue(new App());
     }
 

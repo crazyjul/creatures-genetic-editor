@@ -3,7 +3,7 @@
         <div class="field"><span class="label">Organ</span><span class="value">{{['Brain', 'Creature', 'Organ', 'Reaction'][value.organId % 4]}} <span class="muted">({{value.organId % 4}})</span></span></div>
         <div class="field"><span class="label">Tissue id</span><span class="value">{{value.tissueId}}</span></div>
         <div class="field"><span class="label">Locus id</span><span class="value">{{value.locusId}}</span></div>
-        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical}}</span></div>
+        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical | chem}}</span></div>
         <div class="field"><span class="label">Threshold</span><span class="value">{{value.threshold | num}}</span></div>
         <div class="field"><span class="label">Nominal</span><span class="value">{{value.nominal | num}}</span></div>
         <div class="field"><span class="label">Gain</span><span class="value">{{value.gain | num}}</span></div>
