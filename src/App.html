@@ -6,6 +6,12 @@
 			<span>Creatures Gene Editor</span>
 		</div>
 
+		<div class="segmented" v-if="isValid" role="tablist">
+			<button type="button" :class="{active : view == 'genes'}" @click="view = 'genes'">Genes</button>
+			<button type="button" :class="{active : view == 'brain'}" :disabled="lobeGenes.length == 0"
+				@click="view = 'brain'">Brain map</button>
+		</div>
+
 		<div class="topbar-spacer"></div>
 
 		<template v-if="isValid">
@@ -22,7 +28,17 @@
 
 	<main class="workspace" v-if="isValid">
 
-		<section class="pane">
+		<section class="pane" v-if="view == 'brain'">
+			<div class="pane-header">
+				<div class="pane-title">Brain<small>{{lobeGenes.length}} lobes &middot; {{tractGenes.length}} tracts</small></div>
+			</div>
+			<div class="pane-body">
+				<brain-map :lobes="lobeGenes" :tracts="tractGenes" :selected="selectedGenes"
+					@toggle="toggleGeneSelection"></brain-map>
+			</div>
+		</section>
+
+		<section class="pane" v-else>
 			<div class="pane-header">
 				<div class="pane-title">Genes<small>{{rows.length}} of {{genes.length}}</small></div>
 			</div>

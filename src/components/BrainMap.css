@@ -1,0 +1,96 @@
+.brain-map {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    height: 100%;
+    padding: .8rem;
+}
+
+.brain-map svg {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    user-select: none;
+}
+
+.brain-map .lobe {
+    cursor: pointer;
+}
+
+.brain-map .lobe rect {
+    stroke: rgba(0, 0, 0, .25);
+    stroke-width: 1;
+    transition: stroke .12s, stroke-width .12s;
+}
+
+.brain-map .lobe:hover rect {
+    stroke: var(--text);
+    stroke-width: 2;
+}
+
+.brain-map .lobe.selected rect {
+    stroke: var(--accent);
+    stroke-width: 3.5;
+}
+
+.brain-map .lobe text {
+    pointer-events: none;
+}
+
+.brain-map .tract {
+    cursor: pointer;
+}
+
+.brain-map .tract .hit {
+    stroke: transparent;
+    stroke-width: 12;
+}
+
+.brain-map .tract .stroke {
+    stroke: #94a3b8;
+    stroke-width: 1.6;
+    opacity: .75;
+}
+
+.brain-map .tract.migrating .stroke {
+    stroke: var(--accent);
+}
+
+.brain-map .tract:hover .stroke {
+    stroke-width: 3;
+    opacity: 1;
+}
+
+.brain-map .tract.selected .stroke {
+    stroke: var(--danger);
+    stroke-width: 3;
+    opacity: 1;
+}
+
+.brain-map .arrow-fixed { fill: #94a3b8; }
+.brain-map .arrow-migrating { fill: var(--accent); }
+
+.brain-map .legend {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.2rem;
+    color: var(--text-muted);
+    font-size: .8rem;
+}
+
+.brain-map .swatch-line {
+    display: inline-block;
+    width: 22px;
+    height: 0;
+    margin-right: .3rem;
+    border-top: 2px solid #94a3b8;
+    vertical-align: middle;
+}
+
+.brain-map .swatch-line.migrating {
+    border-top-color: var(--accent);
+}

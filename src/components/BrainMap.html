@@ -1,0 +1,39 @@
+<div class="brain-map">
+    <svg :viewBox="viewBox" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Brain map">
+        <defs>
+            <marker id="arrow-fixed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="arrow-fixed" />
+            </marker>
+            <marker id="arrow-migrating" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="arrow-migrating" />
+            </marker>
+        </defs>
+
+        <g class="tracts">
+            <g v-for="(line, i) in tractLines" :key="'t' + i" class="tract"
+                :class="{migrating : line.migrates, selected : isSelected(line.gene)}" @click="toggle(line.gene)">
+                <title>{{line.title}}</title>
+                <!-- A wide transparent stroke makes thin lines easy to click -->
+                <path class="hit" :d="line.path" fill="none" />
+                <path class="stroke" :d="line.path" fill="none"
+                    :marker-end="line.migrates ? 'url(#arrow-migrating)' : 'url(#arrow-fixed)'" />
+            </g>
+        </g>
+
+        <g class="lobes">
+            <g v-for="(rect, i) in lobeRects" :key="'l' + i" class="lobe" :class="{selected : isSelected(rect.gene)}"
+                @click="toggle(rect.gene)">
+                <title>{{rect.title}}</title>
+                <rect :x="rect.x" :y="rect.y" :width="rect.w" :height="rect.h" rx="3" :fill="rect.fill" />
+                <text :x="rect.x + rect.w / 2" :y="rect.y + rect.h / 2" :fill="rect.textColour"
+                    text-anchor="middle" dominant-baseline="central">{{rect.label}}</text>
+            </g>
+        </g>
+    </svg>
+
+    <div class="legend">
+        <span><i class="swatch-line fixed"></i> Fixed tract</span>
+        <span><i class="swatch-line migrating"></i> Migrating tract</span>
+        <span>Click a lobe or a tract to select it.</span>
+    </div>
+</div>

@@ -2,6 +2,8 @@ import haxevx.vuex.core.NoneT;
 import haxevx.vuex.core.VComponent;
 
 import creatures.gene.Gene;
+import creatures.gene.LobeGene;
+import creatures.gene.TractGene;
 import components.GeneView;
 
 class App extends VComponent<AppData, NoneT> {
@@ -12,12 +14,17 @@ class App extends VComponent<AppData, NoneT> {
     }
 
     override public function Components() {
-        return ["file-select"=> new components.FileSelect(), "gene-view" => new GeneView() ];
+        return [
+            "file-select" => new components.FileSelect(),
+            "gene-view" => new GeneView(),
+            "brain-map" => new components.BrainMap()
+        ];
     }
 
     override public function Data() :  AppData {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
+            view : "genes",
             search : "", kindFilter : -1,
             kinds : [
                 { type : -1, label : "All" },
@@ -51,6 +58,17 @@ class App extends VComponent<AppData, NoneT> {
         }
 
         return genome.genes;
+    }
+
+    var lobeGenes(get, never):Array<LobeGene>;
+    var tractGenes(get, never):Array<TractGene>;
+
+    function get_lobeGenes() : Array<LobeGene> {
+        return [for(gene in genes) if(Std.isOfType(gene, LobeGene)) cast gene];
+    }
+
+    function get_tractGenes() : Array<TractGene> {
+        return [for(gene in genes) if(Std.isOfType(gene, TractGene)) cast gene];
     }
 
     var rows(get, never):Array<GeneRow>;
@@ -141,6 +159,7 @@ class App extends VComponent<AppData, NoneT> {
             selectedGenes = [];
             search = "";
             kindFilter = -1;
+            view = "genes";
             genome = new creatures.Genome(bytes);
         }
         reader.onerror = function(event) {
@@ -173,6 +192,7 @@ typedef AppData = {
     var genome: creatures.Genome;
     var genomeNotes: creatures.gene.notes.GenomeNotes;
     var selectedGenes: Array<creatures.gene.Gene>;
+    var view: String;
     var search: String;
     var kindFilter: Int;
     var kinds: Array<Dynamic>;
