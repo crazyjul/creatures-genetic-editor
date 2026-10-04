@@ -2,12 +2,25 @@
     <div class="fields">
         <div class="field"><span class="label">Pose number</span><span class="value">{{value.poseNumber}}</span></div>
         <div class="field"><span class="label">Pose string</span><span class="value token">{{value.poseString}}</span></div>
+        <div class="field"><span class="label">Direction</span><span class="value token">{{direction}}</span></div>
     </div>
-    <div class="pose-parts">
-        <div class="pose-part" v-for="(part, i) in value.parts" :key="i" v-if="part.name != 'Spare'"
-            :class="{unset : part.code == '?' || part.code == 'X'}">
-            <span class="part-name">{{part.name}}</span>
-            <span class="part-code">{{part.code}}</span>
+
+    <div class="pose-layout">
+        <svg class="pose-figure" viewBox="0 0 160 196" role="img" aria-label="Pose of each body part">
+            <g v-for="part in figure" :key="part.name" class="part" :class="part.state">
+                <title>{{part.name}}: {{part.code}}</title>
+                <rect :x="part.x" :y="part.y" :width="part.width" :height="part.height" rx="5" />
+                <text :x="part.x + part.width / 2" :y="part.y + part.height / 2"
+                    text-anchor="middle" dominant-baseline="central">{{part.code}}</text>
+            </g>
+        </svg>
+
+        <div class="pose-parts">
+            <div class="pose-part" v-for="(part, i) in value.parts" :key="i" v-if="part.name != 'Spare' && part.name != 'Direction'"
+                :class="{unset : part.code == '?' || part.code == 'X'}">
+                <span class="part-name">{{part.name}}</span>
+                <span class="part-code">{{part.code}}</span>
+            </div>
         </div>
     </div>
     <p class="notice">A digit selects the pose of that body part, <code>?</code> leaves it unchanged and <code>X</code> means none.</p>
