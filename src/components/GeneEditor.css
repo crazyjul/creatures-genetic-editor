@@ -30,7 +30,7 @@
     min-width: 0;
 }
 
-.editor-field > label {
+.editor-field > label.field-label {
     color: var(--text-muted);
     font-size: .72rem;
     font-weight: 600;

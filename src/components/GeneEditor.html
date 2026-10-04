@@ -3,7 +3,7 @@
         <summary>Edit values <span class="muted">{{fields.length}} fields</span></summary>
         <div class="editor-grid">
             <div class="editor-field" v-for="f in fields" :key="f.name" :class="'kind-' + f.kind">
-                <label>{{f.label}}</label>
+                <label class="field-label">{{f.label}}</label>
 
                 <el-checkbox v-if="f.kind == 'bit' || f.kind == 'bool'" :value="current(f)"
                     @change="commit(f, $event)">{{f.hint || 'Yes'}}</el-checkbox>
