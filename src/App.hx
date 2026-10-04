@@ -26,7 +26,16 @@ class App extends VComponent<AppData, NoneT> {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
             view : "genes",
             grouped : false, collapsed : [],
-            search : "", kindFilter : -1,
+            search : "", kindFilter : -1, ageFilter : "",
+            ages : [
+                { value : "Embryo", label : "Embryo" },
+                { value : "Child", label : "Child" },
+                { value : "Adolescent", label : "Adolescent" },
+                { value : "Youth", label : "Youth" },
+                { value : "Adult", label : "Adult" },
+                { value : "Old", label : "Old" },
+                { value : "Senile", label : "Senile" }
+            ],
             kinds : [
                 { type : -1, label : "All" },
                 { type : 0, label : "Brain" },
@@ -81,11 +90,11 @@ class App extends VComponent<AppData, NoneT> {
         for(i in 0...genes.length) {
             var gene = genes[i];
 
-            if(kindFilter != -1 && gene.type != kindFilter) {
+            if(!matchesKindAndSearch(gene, i, needle)) {
                 continue;
             }
 
-            if(needle != "" && !matches(gene, i, needle)) {
+            if(ageFilter != "" && ageOf(gene) != ageFilter) {
                 continue;
             }
 
@@ -93,6 +102,43 @@ class App extends VComponent<AppData, NoneT> {
         }
 
         return result;
+    }
+
+    function matchesKindAndSearch(gene : Gene, index : Int, needle : String) : Bool {
+        if(kindFilter != -1 && gene.type != kindFilter) {
+            return false;
+        }
+
+        return needle == "" || matches(gene, index, needle);
+    }
+
+    function ageOf(gene : Gene) : String {
+        return cast gene.age;
+    }
+
+    /** Genes switching on at the given life stage, among those passing the kind and search filters. */
+    function ageCount(age : String) : Int {
+        var needle = search.toLowerCase();
+        var count = 0;
+
+        for(i in 0...genes.length) {
+            if(ageOf(genes[i]) == age && matchesKindAndSearch(genes[i], i, needle)) {
+                ++count;
+            }
+        }
+
+        return count;
+    }
+
+    /** Height of a life stage's bar, as a percentage of the busiest stage. */
+    function ageShare(age : String) : Float {
+        var most = 0;
+
+        for(stage in ages) {
+            most = Std.int(Math.max(most, ageCount(stage.value)));
+        }
+
+        return most == 0 ? 0 : ageCount(age) * 100.0 / most;
     }
 
     static var CreatureKinds = [
@@ -263,6 +309,7 @@ class App extends VComponent<AppData, NoneT> {
             selectedGenes = [];
             search = "";
             kindFilter = -1;
+            ageFilter = "";
             collapsed = [];
             view = "genes";
             genome = new creatures.Genome(bytes);
@@ -304,6 +351,8 @@ typedef AppData = {
     var collapsed: Array<String>;
     var search: String;
     var kindFilter: Int;
+    var ageFilter: String;
+    var ages: Array<Dynamic>;
     var kinds: Array<Dynamic>;
 }
 

@@ -61,6 +61,18 @@
 						{{kind.label}} <span class="count">{{kindCount(kind.type)}}</span>
 					</button>
 				</div>
+				<div class="timeline" title="Life stage at which genes switch on">
+					<button type="button" class="stage all" :class="{active : ageFilter == ''}" @click="ageFilter = ''">
+						<span class="stage-name">All</span>
+					</button>
+					<button type="button" v-for="age in ages" :key="age.value" class="stage"
+						:class="{active : ageFilter == age.value, empty : ageCount(age.value) == 0}"
+						@click="ageFilter = ageFilter == age.value ? '' : age.value">
+						<span class="stage-bar"><i :style="{height : ageShare(age.value) + '%'}"></i></span>
+						<span class="stage-count">{{ageCount(age.value)}}</span>
+						<span class="stage-name">{{age.label}}</span>
+					</button>
+				</div>
 			</div>
 			<div class="pane-body">
 				<table class="genome-table" v-if="rows.length > 0">

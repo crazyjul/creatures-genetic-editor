@@ -493,3 +493,87 @@ html, body {
     font-size: .72rem;
     font-weight: 600;
 }
+
+/* ---------- age timeline ---------- */
+
+.timeline {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: .25rem;
+}
+
+.timeline .stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .15rem;
+    min-width: 0;
+    padding: .3rem .2rem .35rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: .72rem;
+    cursor: pointer;
+    transition: background .12s, border-color .12s;
+}
+
+.timeline .stage.all {
+    flex: none;
+    align-self: stretch;
+    justify-content: center;
+    padding: 0 .7rem;
+    font-weight: 600;
+}
+
+.timeline .stage:hover {
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+.timeline .stage.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.timeline .stage.empty {
+    opacity: .45;
+}
+
+.timeline .stage-bar {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 28px;
+}
+
+.timeline .stage-bar i {
+    display: block;
+    width: 100%;
+    min-height: 2px;
+    border-radius: 3px 3px 0 0;
+    background: currentColor;
+    opacity: .55;
+    transition: height .2s;
+}
+
+.timeline .stage-count {
+    color: var(--text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.timeline .stage.active .stage-count {
+    color: var(--accent);
+}
+
+.timeline .stage-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
