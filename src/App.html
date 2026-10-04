@@ -168,6 +168,10 @@
 						<button type="button" :class="{active : !compare}" @click="compare = false">Cards</button>
 						<button type="button" :class="{active : compare}" @click="compare = true">Compare</button>
 					</div>
+					<template v-if="selectedGenes.length > 0">
+						<button type="button" class="btn small" @click="copySelection()" title="Copy the selected genes as JSON">{{copied || 'Copy JSON'}}</button>
+						<button type="button" class="btn small" @click="exportSelection()" title="Save the selected genes as a JSON file">Export JSON</button>
+					</template>
 					<button type="button" class="btn" v-if="selectedGenes.length > 0" @click="clearSelection()">Clear selection</button>
 			</div>
 			<div class="pane-body">

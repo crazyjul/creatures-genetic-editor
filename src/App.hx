@@ -26,7 +26,7 @@ class App extends VComponent<AppData, NoneT> {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
             view : "genes", compare : false, theme : "light", cursorKey : "",
-            chemical : -1, chemicalSearch : "", usedOnly : true,
+            chemical : -1, chemicalSearch : "", usedOnly : true, copied : "",
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
             ages : [
@@ -513,6 +513,30 @@ class App extends VComponent<AppData, NoneT> {
         selectedGenes = [];
     }
 
+    function selectionJson() : String {
+        return components.GeneExport.toJson(selectedGenes, selectedLabels);
+    }
+
+    /** The selected genes as a JSON file named after the genome. */
+    function exportSelection() : Void {
+        var base = "genome";
+
+        if(file != null) {
+            // Drop the last extension: "norn.gen" becomes "norn".
+            var dot = file.name.lastIndexOf(".");
+            base = dot > 0 ? file.name.substr(0, dot) : file.name;
+        }
+
+        components.GeneExport.download(base + "-selection.json", selectionJson());
+    }
+
+    function copySelection() : Void {
+        components.GeneExport.copy(selectionJson(), function(ok : Bool) {
+            copied = ok ? "Copied" : "Copy failed";
+            js.Browser.window.setTimeout(function() { copied = ""; }, 1800);
+        });
+    }
+
     var selectedLabels(get, never):Array<String>;
 
     function get_selectedLabels() : Array<String> {
@@ -589,6 +613,7 @@ typedef AppData = {
     var compare: Bool;
     var theme: String;
     var cursorKey: String;
+    var copied: String;
     var chemical: Int;
     var chemicalSearch: String;
     var usedOnly: Bool;
