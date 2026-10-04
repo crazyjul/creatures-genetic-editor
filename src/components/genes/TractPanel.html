@@ -25,10 +25,12 @@
 
     <details class="rule-block">
         <summary>Init rule <span class="muted">{{value.initRule.length}} steps</span></summary>
-        <ol class="rule"><li v-for="(entry, i) in value.initRule" :key="i">{{entry.text}}</li></ol>
+        <ol class="rule"><li v-for="(entry, i) in value.initRule" :key="i"><span class="op" :class="'cat-' + entry.category">{{entry.opName}}</span> <span class="operand" :class="'kind-' + entry.operandKind" v-if="entry.operandText">{{entry.operandText}}</span></li></ol>
+        <div class="rule-legend"><span class="op cat-flow">flow</span><span class="op cat-memory">memory</span><span class="op cat-math">math</span><span class="op cat-neuron">neuron</span><span class="op cat-learning">learning</span></div>
     </details>
     <details class="rule-block">
         <summary>Update rule <span class="muted">{{value.updateRule.length}} steps</span></summary>
-        <ol class="rule"><li v-for="(entry, i) in value.updateRule" :key="i">{{entry.text}}</li></ol>
+        <ol class="rule"><li v-for="(entry, i) in value.updateRule" :key="i"><span class="op" :class="'cat-' + entry.category">{{entry.opName}}</span> <span class="operand" :class="'kind-' + entry.operandKind" v-if="entry.operandText">{{entry.operandText}}</span></li></ol>
+        <div class="rule-legend"><span class="op cat-flow">flow</span><span class="op cat-memory">memory</span><span class="op cat-math">math</span><span class="op cat-neuron">neuron</span><span class="op cat-learning">learning</span></div>
     </details>
 </gene-header>
