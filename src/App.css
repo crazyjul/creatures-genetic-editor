@@ -577,3 +577,172 @@ html, body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ---------- colour roles that change with the theme ---------- */
+
+:root {
+    color-scheme: light;
+    --c-flow: #c026d3;
+    --c-memory: #2563eb;
+    --c-math: #0d9488;
+    --c-neuron: #d97706;
+    --c-learning: #dc2626;
+    --c-variable: #7c3aed;
+    --c-chemical: #059669;
+    --c-number: #ea580c;
+    --error-bg: #fdecee;
+    --error-border: #f7c9ce;
+}
+
+/* ---------- dark theme ---------- */
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1218;
+    --surface: #171b24;
+    --surface-alt: #1d2230;
+    --border: #2b3244;
+    --text: #e6e9f0;
+    --text-muted: #9aa3b8;
+    --accent: #7c93ff;
+    --accent-soft: #232c52;
+    --danger: #ff6b76;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    --c-flow: #e879f9;
+    --c-memory: #60a5fa;
+    --c-math: #2dd4bf;
+    --c-neuron: #fbbf24;
+    --c-learning: #f87171;
+    --c-variable: #a78bfa;
+    --c-chemical: #34d399;
+    --c-number: #fb923c;
+    --error-bg: #3a1c20;
+    --error-border: #6b2b33;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #0f1218;
+        --surface: #171b24;
+        --surface-alt: #1d2230;
+        --border: #2b3244;
+        --text: #e6e9f0;
+        --text-muted: #9aa3b8;
+        --accent: #7c93ff;
+        --accent-soft: #232c52;
+        --danger: #ff6b76;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+        --c-flow: #e879f9;
+        --c-memory: #60a5fa;
+        --c-math: #2dd4bf;
+        --c-neuron: #fbbf24;
+        --c-learning: #f87171;
+        --c-variable: #a78bfa;
+        --c-chemical: #34d399;
+        --c-number: #fb923c;
+        --error-bg: #3a1c20;
+        --error-border: #6b2b33;
+    }
+}
+
+.error-banner {
+    background: var(--error-bg);
+    border-color: var(--error-border);
+}
+
+/* ---------- Element UI follows the theme ---------- */
+
+.el-input__inner,
+.el-input-number__decrease,
+.el-input-number__increase {
+    background-color: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.el-input-number__decrease,
+.el-input-number__increase {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+}
+
+.el-input__inner::placeholder {
+    color: var(--text-muted);
+}
+
+.el-input__icon,
+.el-input__prefix,
+.el-input__suffix {
+    color: var(--text-muted);
+}
+
+.el-select-dropdown,
+.el-popper {
+    background-color: var(--surface);
+    border-color: var(--border);
+}
+
+.el-select-dropdown__item {
+    color: var(--text);
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+    background-color: var(--surface-alt);
+}
+
+.el-popper[x-placement^="bottom"] .popper__arrow,
+.el-popper[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: var(--border);
+}
+
+.el-popper[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: var(--surface);
+}
+
+.el-popper[x-placement^="top"] .popper__arrow,
+.el-popper[x-placement^="top"] .popper__arrow::after {
+    border-top-color: var(--border);
+}
+
+.el-popper[x-placement^="top"] .popper__arrow::after {
+    border-top-color: var(--surface);
+}
+
+.el-checkbox,
+.el-checkbox__label {
+    color: var(--text-muted);
+}
+
+.el-checkbox__inner {
+    background-color: var(--surface);
+    border-color: var(--border);
+}
+
+.el-radio-button__inner {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+/* ---------- theme toggle ---------- */
+
+.icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all .12s;
+}
+
+.icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}

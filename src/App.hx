@@ -25,7 +25,7 @@ class App extends VComponent<AppData, NoneT> {
     override public function Data() :  AppData {
         return {
             file : null, gnoFile : null, genome : null, selectedGenes : [], genomeNotes : null,
-            view : "genes", compare : false,
+            view : "genes", compare : false, theme : "light",
             grouped : false, collapsed : [],
             search : "", kindFilter : -1, ageFilter : "",
             ages : [
@@ -49,6 +49,41 @@ class App extends VComponent<AppData, NoneT> {
 
     override public function Template() {
         return Webpack.require('./App.html');
+    }
+
+    static inline var ThemeStorageKey = "gene-editor-theme";
+
+    /** Starts from the saved choice, otherwise from the system setting. */
+    override function Created() : Void {
+        var stored : String = null;
+
+        try {
+            stored = js.Browser.getLocalStorage().getItem(ThemeStorageKey);
+        } catch(e : Dynamic) {
+            // Storage can be blocked (private windows); the theme then simply is not remembered.
+        }
+
+        if(stored == "dark" || stored == "light") {
+            theme = stored;
+        } else {
+            theme = js.Browser.window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+
+        applyTheme();
+    }
+
+    function applyTheme() {
+        js.Browser.document.documentElement.setAttribute("data-theme", theme);
+    }
+
+    function toggleTheme() {
+        theme = theme == "dark" ? "light" : "dark";
+        applyTheme();
+
+        try {
+            js.Browser.getLocalStorage().setItem(ThemeStorageKey, theme);
+        } catch(e : Dynamic) {
+        }
     }
 
     override function El():String {
@@ -355,6 +390,7 @@ typedef AppData = {
     var selectedGenes: Array<creatures.gene.Gene>;
     var view: String;
     var compare: Bool;
+    var theme: String;
     var grouped: Bool;
     var collapsed: Array<String>;
     var search: String;

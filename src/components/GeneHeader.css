@@ -576,16 +576,16 @@
     font-weight: 700;
 }
 
-.op.cat-flow { color: #c026d3; }
-.op.cat-memory { color: #2563eb; }
-.op.cat-math { color: #0d9488; }
-.op.cat-neuron { color: #d97706; }
-.op.cat-learning { color: #dc2626; }
+.op.cat-flow { color: var(--c-flow); }
+.op.cat-memory { color: var(--c-memory); }
+.op.cat-math { color: var(--c-math); }
+.op.cat-neuron { color: var(--c-neuron); }
+.op.cat-learning { color: var(--c-learning); }
 .op.cat-other { color: var(--text-muted); }
 
-.rule .operand.kind-variable { color: #7c3aed; }
-.rule .operand.kind-chemical { color: #059669; }
-.rule .operand.kind-number { color: #ea580c; }
+.rule .operand.kind-variable { color: var(--c-variable); }
+.rule .operand.kind-chemical { color: var(--c-chemical); }
+.rule .operand.kind-number { color: var(--c-number); }
 .rule .operand.kind-accumulator { color: var(--text-muted); font-style: italic; }
 
 .rule-legend {

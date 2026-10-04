@@ -24,6 +24,9 @@
 			<file-select v-else v-model="gnoFile" compact label="Load notes (.gno)"></file-select>
 			<file-select v-model="file" compact label="Open another genome"></file-select>
 		</template>
+	<button type="button" class="icon-btn" @click="toggleTheme()"
+			:title="theme == 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
+			:aria-label="theme == 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'">{{theme == 'dark' ? '&#9728;' : '&#9790;'}}</button>
 	</header>
 
 	<main class="workspace" v-if="isValid">
