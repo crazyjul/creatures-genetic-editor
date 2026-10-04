@@ -1,9 +1,9 @@
-<gene-header v-model="value" name="Appearance" :notes="notes">
-    <div>stimulus : {{value.stimulus}} </div>
-    <div>nounStimulation : {{value.nounStimulation}} </div>
-    <div>verbToStimulate : {{value.verbToStimulate}} </div>
-    <div>stimulusFlags : {{value.stimulusFlags}} </div>
-    <div v-for="(chemical, index) in value.chemicals">
-        chemical {{chemical}} value :{{value.adjustments[index]}}
+<gene-header v-model="value" name="Stimulus" :notes="notes">
+    <div class="fields">
+        <div class="field"><span class="label">Stimulus</span><span class="value">{{value.stimulus}}</span></div>
+        <div class="field"><span class="label">Noun stimulation</span><span class="value">{{value.nounStimulation}}</span></div>
+        <div class="field"><span class="label">Verb to stimulate</span><span class="value">{{value.verbToStimulate}}</span></div>
+        <div class="field"><span class="label">Flags</span><span class="value">{{value.stimulusFlags}}</span></div>
+        <div class="field" v-for="(chemical, index) in value.chemicals" :key="index"><span class="label">Chemical {{chemical}}</span><span class="value">{{value.adjustments[index] | num}}</span></div>
     </div>
 </gene-header>

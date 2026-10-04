@@ -1,23 +1,50 @@
-<el-container>
+<article class="gene-card" :class="'kind-' + value.type">
+  <header class="gene-card-header">
+    <span class="kind-bar"></span>
+    <div class="gene-title">
+      <div class="gene-name">
+        <span class="badge">{{name || 'Gene'}}</span>
+        <span class="gene-annotation" :class="{muted : !annotation}">{{annotation || 'No annotation'}}</span>
+      </div>
+      <div class="gene-meta">
+        Id {{value.id}} &middot; Generation {{value.generation}} &middot; Type {{value.type}}.{{value.subtype}}
+      </div>
+    </div>
+  </header>
 
-  <el-header height="20px">
-    {{value.id}} - {{name}} - {{annotation}}
-  </el-header>
-  <el-main>
-    <el-select :span="12" v-model="value.age" placeholder="Select">
-      <el-option v-for="item in ageOptions" :key="item.value" :label="item.label" :value="item.value">
-      </el-option>
-    </el-select>
-    <el-checkbox :span="4" v-model="duplicate">Dup</el-checkbox>
-    <el-checkbox :span="4" v-model="mutate">Mut</el-checkbox>
+  <div class="gene-controls">
+    <div class="control">
+      <label>Switch on</label>
+      <el-select v-model="value.age" size="small" placeholder="Select">
+        <el-option v-for="item in ageOptions" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
 
-    <el-input-number :span="4" v-model="value.mutability" controls-position="right" :min="0" :max="255" />
+    <div class="control">
+      <label>Sex</label>
+      <el-radio-group v-model="value.sex" size="small">
+        <el-radio-button label="Both">Both</el-radio-button>
+        <el-radio-button label="Male">Male</el-radio-button>
+        <el-radio-button label="Female">Female</el-radio-button>
+      </el-radio-group>
+    </div>
 
-    <el-radio-group v-model="value.sex">
-      <el-radio label="Both">B</el-radio>
-      <el-radio label="Male">M</el-radio>
-      <el-radio label="Female">F</el-radio>
-    </el-radio-group>
+    <div class="control">
+      <label>Mutability</label>
+      <el-input-number v-model="value.mutability" size="small" controls-position="right" :min="0" :max="255" />
+    </div>
+
+    <div class="control">
+      <label>Flags</label>
+      <div class="flags">
+        <el-checkbox v-model="duplicate">Can duplicate</el-checkbox>
+        <el-checkbox v-model="mutate">Can mutate</el-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="gene-body">
     <slot></slot>
-  </el-main>
-</el-container>
+  </div>
+</article>

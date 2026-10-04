@@ -1,0 +1,25 @@
+<gene-header v-model="value" name="Lobe" :notes="notes">
+    <div class="lobe-summary">
+        <div class="lobe-preview-frame">
+            <div class="lobe-preview" :style="previewStyle"></div>
+            <div class="lobe-preview-caption">{{value.width}} &times; {{value.height}} neurons</div>
+        </div>
+        <div class="fields">
+            <div class="field"><span class="label">Token</span><span class="value token">{{value.token}}</span></div>
+            <div class="field"><span class="label">Neurons</span><span class="value">{{value.neuronCount}}</span></div>
+            <div class="field"><span class="label">Tissue id</span><span class="value">{{value.tissueId}}</span></div>
+            <div class="field"><span class="label">Update time</span><span class="value">{{value.updateTime}}</span></div>
+            <div class="field"><span class="label">Position</span><span class="value">{{value.x}}, {{value.y}}</span></div>
+            <div class="field"><span class="label">Init rule runs</span><span class="value">{{value.runInitRuleAlways ? 'every update' : 'once'}}</span></div>
+        </div>
+    </div>
+
+    <details class="rule-block">
+        <summary>Init rule <span class="muted">{{value.initRule.length}} steps</span></summary>
+        <ol class="rule"><li v-for="(entry, i) in value.initRule" :key="i">{{entry.text}}</li></ol>
+    </details>
+    <details class="rule-block">
+        <summary>Update rule <span class="muted">{{value.updateRule.length}} steps</span></summary>
+        <ol class="rule"><li v-for="(entry, i) in value.updateRule" :key="i">{{entry.text}}</li></ol>
+    </details>
+</gene-header>

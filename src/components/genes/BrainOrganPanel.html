@@ -1,0 +1,9 @@
+<gene-header v-model="value" name="Brain organ" :notes="notes">
+    <div class="fields">
+        <div class="field"><span class="label">Clock rate</span><span class="value">{{value.clockRate | num}}</span></div>
+        <div class="field"><span class="label">Repair rate</span><span class="value">{{value.repairRate | num}}</span></div>
+        <div class="field"><span class="label">Life force</span><span class="value">{{value.lifeForce | num}}</span></div>
+        <div class="field"><span class="label">Init clock</span><span class="value">{{value.initClock | num}}</span></div>
+        <div class="field"><span class="label">Zero energy damage</span><span class="value">{{value.zeroEnergyDamage | num}}</span></div>
+    </div>
+</gene-header>

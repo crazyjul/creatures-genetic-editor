@@ -1,12 +1,12 @@
-<gene-header v-model="value" name="Receptor" :notes="notes" >
-
-    <div>Organ id : {{value.organId}} </div>
-    <!--Todo lookup organ gene/name-->
-    <div>Tissue id : {{value.tissueId}} </div>
-    <div>Locus id : {{value.locusId}} </div>
-    <div>Chemical : {{value.chemical}} </div>
-    <div>Threshold : {{value.threshold}} </div>
-    <div>Nominal : {{value.nominal}} </div>
-    <div>Gain : {{value.gain}} </div>
-    <div>effect : {{value.effect}} </div>
+<gene-header v-model="value" name="Receptor" :notes="notes">
+    <div class="fields">
+        <div class="field"><span class="label">Organ id</span><span class="value">{{value.organId}}</span></div>
+        <div class="field"><span class="label">Tissue id</span><span class="value">{{value.tissueId}}</span></div>
+        <div class="field"><span class="label">Locus id</span><span class="value">{{value.locusId}}</span></div>
+        <div class="field"><span class="label">Chemical</span><span class="value">{{value.chemical}}</span></div>
+        <div class="field"><span class="label">Threshold</span><span class="value">{{value.threshold | num}}</span></div>
+        <div class="field"><span class="label">Nominal</span><span class="value">{{value.nominal | num}}</span></div>
+        <div class="field"><span class="label">Gain</span><span class="value">{{value.gain | num}}</span></div>
+        <div class="field"><span class="label">Effect</span><span class="value">{{value.effect}}</span></div>
+    </div>
 </gene-header>

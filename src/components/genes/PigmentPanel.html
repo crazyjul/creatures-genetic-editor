@@ -1,0 +1,15 @@
+<gene-header v-model="value" name="Pigment" :notes="notes">
+    <div class="pigment">
+        <div class="swatch" :class="'channel-' + value.channel"></div>
+        <div class="pigment-body">
+            <div class="fields">
+                <div class="field"><span class="label">Channel</span><span class="value">{{value.channelName}}</span></div>
+                <div class="field"><span class="label">Amount</span><span class="value">{{value.amount}} <span class="muted">/ 255</span></span></div>
+            </div>
+            <div class="bar" title="Amount; the mark is the neutral value (128)">
+                <div class="bar-fill" :class="'channel-' + value.channel" :style="{width : value.amount / 255 * 100 + '%'}"></div>
+                <div class="bar-mark" style="left:50.2%"></div>
+            </div>
+        </div>
+    </div>
+</gene-header>

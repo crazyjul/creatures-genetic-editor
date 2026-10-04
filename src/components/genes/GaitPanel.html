@@ -1,0 +1,11 @@
+<gene-header v-model="value" name="Gait" :notes="notes">
+    <div class="fields">
+        <div class="field"><span class="label">Gait number</span><span class="value">{{value.gait}}</span></div>
+    </div>
+    <div class="label-row">Pose sequence</div>
+    <div class="pose-chips">
+        <span class="pose-chip" v-for="(pose, i) in value.poses" :key="i" :class="{unused : pose == 0}">
+            <small>{{i + 1}}</small>{{pose == 0 ? '-' : pose}}
+        </span>
+    </div>
+</gene-header>

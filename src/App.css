@@ -1,14 +1,412 @@
-.genome {
-    width: 30%;
-    height:100vh;
+:root {
+    --bg: #f4f5f9;
+    --surface: #ffffff;
+    --surface-alt: #f8f9fc;
+    --border: #e3e6ee;
+    --text: #1f2430;
+    --text-muted: #6b7385;
+    --accent: #4f6df5;
+    --accent-soft: #eaeefe;
+    --danger: #d64550;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(20, 30, 60, .06), 0 4px 14px rgba(20, 30, 60, .05);
+
+    --kind-brain: #8b5cf6;
+    --kind-biochem: #10b981;
+    --kind-creature: #f59e0b;
+    --kind-organ: #ef4444;
+    --kind-unknown: #94a3b8;
+
+    /* Element UI picks its primary colour from these */
+    --el-accent: var(--accent);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+}
+
+#app, .app {
+    height: 100%;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- top bar ---------- */
+
+.topbar {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    min-height: 56px;
+    padding: .5rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -.01em;
+}
+
+.brand-logo {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff;
+    font-size: 1rem;
+}
+
+.topbar-spacer {
+    flex: 1;
+}
+
+.file-chip {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .3rem .7rem;
+    border-radius: 999px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: .85rem;
+    max-width: 280px;
+}
+
+.file-chip strong {
+    color: var(--text);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---------- start screen ---------- */
+
+.start {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1rem;
+}
+
+.start-card {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+}
+
+.start-card h1 {
+    margin: 0 0 .4rem;
+    font-size: 1.6rem;
+    letter-spacing: -.02em;
+}
+
+.start-card p {
+    margin: 0 0 1.5rem;
+    color: var(--text-muted);
+}
+
+.error-banner {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    border-radius: var(--radius);
+    background: #fdecee;
+    color: var(--danger);
+    border: 1px solid #f7c9ce;
+    text-align: left;
+}
+
+/* ---------- workspace ---------- */
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(420px, 46%) 1fr;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.pane {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.pane-header {
+    flex: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .6rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.pane-title {
+    font-weight: 700;
+    margin-right: auto;
+}
+
+.pane-title small {
+    margin-left: .4rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.pane-body {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    float: left;
 }
 
-.gene-view {
-    width: 67%;
+/* ---------- gene list ---------- */
+
+.toolbar {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-alt);
 }
 
-.genome .selected {
-    background-color: lightblue;
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .2rem .65rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-muted);
+    font: inherit;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: all .12s;
+}
+
+.chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.chip .count {
+    opacity: .7;
+    font-variant-numeric: tabular-nums;
+}
+
+.genome-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.genome-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: .5rem .6rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.genome-table td {
+    padding: .45rem .6rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.genome-table tbody tr {
+    cursor: pointer;
+    transition: background .1s;
+}
+
+.genome-table tbody tr:hover {
+    background: var(--surface-alt);
+}
+
+.genome-table tbody tr.selected {
+    background: var(--accent-soft);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.genome-table .muted {
+    color: var(--text-muted);
+}
+
+.genome-table td.description {
+    width: 100%;
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: .4rem;
+    height: 100%;
+    min-height: 160px;
+    padding: 2rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.empty .emoji {
+    font-size: 2rem;
+    opacity: .6;
+}
+
+/* ---------- kind badges ---------- */
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: .5rem;
+    border-radius: 50%;
+    background: var(--kind-unknown);
+}
+
+.kind-0 .dot, .dot.kind-0 { background: var(--kind-brain); }
+.kind-1 .dot, .dot.kind-1 { background: var(--kind-biochem); }
+.kind-2 .dot, .dot.kind-2 { background: var(--kind-creature); }
+.kind-3 .dot, .dot.kind-3 { background: var(--kind-organ); }
+
+/* ---------- buttons ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .12s;
+}
+
+.btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.btn.primary:hover {
+    filter: brightness(1.08);
+    color: #fff;
+}
+
+/* ---------- details ---------- */
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+    padding: 1rem;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 960px) {
+    .workspace {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(260px, 1fr) minmax(260px, 1fr);
+    }
+}
+
+/* ---------- Element UI tweaks to match the theme ---------- */
+
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.el-checkbox__input.is-checked + .el-checkbox__label,
+.el-radio__input.is-checked + .el-radio__label,
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    color: var(--accent);
+}
+
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: -1px 0 0 0 var(--accent);
+    color: #fff;
+}
+
+.el-select .el-input.is-focus .el-input__inner,
+.el-select .el-input__inner:focus,
+.el-input__inner:focus,
+.el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled),
+.el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
+    border-color: var(--accent);
+}
+
+.el-select-dropdown__item.selected {
+    color: var(--accent);
 }

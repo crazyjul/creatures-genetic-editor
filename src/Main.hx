@@ -14,6 +14,14 @@ class Main {
             return Std.string(a);
         });
 
+        Vue.filter('num', function(a:Dynamic) {
+            if(Std.isOfType(a, Float)) {
+                return Std.string(Math.round(a * 1000) / 1000);
+            }
+
+            return Std.string(a);
+        });
+
         new Vue(new App());
     }
 

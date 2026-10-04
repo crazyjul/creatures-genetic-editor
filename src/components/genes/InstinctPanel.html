@@ -1,0 +1,21 @@
+<gene-header v-model="value" name="Instinct" :notes="notes">
+    <div class="instinct-inputs">
+        <div class="instinct-input" v-for="(input, i) in value.inputs" :key="i" :class="{unused : input.lobeTissueId == -1}">
+            <span class="label">Input {{i + 1}}</span>
+            <span class="value" v-if="input.lobeTissueId != -1">lobe tissue {{input.lobeTissueId}} &middot; neuron {{input.neuron}}</span>
+            <span class="value" v-else>unused</span>
+        </div>
+    </div>
+
+    <div class="fields">
+        <div class="field"><span class="label">Action (verb script id)</span><span class="value">{{value.action}}</span></div>
+        <div class="field"><span class="label">Reinforcing drive</span><span class="value">{{value.drive}}</span></div>
+        <div class="field"><span class="label">Reinforcement</span><span class="value">{{value.reinforcement | num}}</span></div>
+    </div>
+
+    <div class="meter">
+        <div class="meter-fill" :class="value.reinforcement < 0 ? 'negative' : 'positive'"
+            :style="{left : (value.reinforcement < 0 ? 50 + value.reinforcement * 50 : 50) + '%', width : Math.abs(value.reinforcement) * 50 + '%'}"></div>
+        <div class="meter-zero"></div>
+    </div>
+</gene-header>

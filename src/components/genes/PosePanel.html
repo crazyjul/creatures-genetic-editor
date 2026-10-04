@@ -1,0 +1,14 @@
+<gene-header v-model="value" name="Pose" :notes="notes">
+    <div class="fields">
+        <div class="field"><span class="label">Pose number</span><span class="value">{{value.poseNumber}}</span></div>
+        <div class="field"><span class="label">Pose string</span><span class="value token">{{value.poseString}}</span></div>
+    </div>
+    <div class="pose-parts">
+        <div class="pose-part" v-for="(part, i) in value.parts" :key="i" v-if="part.name != 'Spare'"
+            :class="{unset : part.code == '?' || part.code == 'X'}">
+            <span class="part-name">{{part.name}}</span>
+            <span class="part-code">{{part.code}}</span>
+        </div>
+    </div>
+    <p class="notice">A digit selects the pose of that body part, <code>?</code> leaves it unchanged and <code>X</code> means none.</p>
+</gene-header>

@@ -1,5 +1,7 @@
 <gene-header v-model="value" name="Appearance" :notes="notes">
-    <div>Body region : {{value.bodyRegion}} </div>
-    <div>Body variant: {{value.bodyVariant}} </div>
-    <div>Genus variant: {{value.genusVariant}} </div>
+    <div class="fields">
+        <div class="field"><span class="label">Body region</span><span class="value">{{value.bodyRegion}}</span></div>
+        <div class="field"><span class="label">Body variant</span><span class="value">{{value.bodyVariant}}</span></div>
+        <div class="field"><span class="label">Genus variant</span><span class="value">{{value.genusVariant}}</span></div>
+    </div>
 </gene-header>

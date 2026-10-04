@@ -1,0 +1,25 @@
+package components.genes;
+
+import haxevx.vuex.core.NoneT;
+import haxevx.vuex.core.VComponent;
+
+import creatures.gene.NeuroEmitterGene;
+
+class NeuroEmitterPanel extends VComponent<NoneT, Props> {
+    public function new() {
+        super();
+    }
+
+    override public function Components() {
+        return [ "gene-header" => new components.GeneHeader() ];
+    }
+
+    override public function Template() {
+        return Webpack.require('./NeuroEmitterPanel.html');
+    }
+}
+
+private typedef Props = {
+    var value: NeuroEmitterGene;
+    var notes : creatures.gene.notes.GenomeNotes;
+};

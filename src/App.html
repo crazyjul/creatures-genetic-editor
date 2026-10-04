@@ -1,41 +1,102 @@
-<div>
+<div class="app">
 
-	<div v-if="isValid">
-		<div v-if="!genomeNotes">
-			<p>Open a genome note file (.gno): <file-select v-model="gnoFile"></file-select>
-			</p>
+	<header class="topbar">
+		<div class="brand">
+			<span class="brand-logo">&#129516;</span>
+			<span>Creatures Gene Editor</span>
 		</div>
-		<div class="genome">
-			<table>
-				<tr>
-					<th>#</th>
-					<th>Gen-#</th>
-					<th>G-Id</th>
-					<th>Switch on</th>
-					<th>Sex</th>
-					<th>Mutability</th>
-					<th>Description</th>
-				</tr>
 
-				<tr v-for="(gene, i) in genes" @click="toggleGeneSelection(gene)"
-					v-bind:class="{selected : isSelected(gene)}">
-					<td>{{i}}</td>
-					<td>{{gene.generation}}</td>
-					<td>{{gene.id}}</td>
-					<td>{{gene.age}}</td>
-					<td>{{gene.sex}}</td>
-					<td>{{gene.mutability | to_string}}</td>
-					<td>{{genomeNotes?genomeNotes.getDescription(gene.type, gene.subtype, gene.id) : gene.getName()}}</td>
-				</tr>
-			</table>
+		<div class="topbar-spacer"></div>
+
+		<template v-if="isValid">
+			<div class="file-chip" title="Genome file">
+				<span>Genome</span><strong>{{file ? file.name : ''}}</strong>
+			</div>
+			<div class="file-chip" v-if="genomeNotes" title="Genome notes file">
+				<span>Notes</span><strong>{{gnoFile ? gnoFile.name : ''}}</strong>
+			</div>
+			<file-select v-else v-model="gnoFile" compact label="Load notes (.gno)"></file-select>
+			<file-select v-model="file" compact label="Open another genome"></file-select>
+		</template>
+	</header>
+
+	<main class="workspace" v-if="isValid">
+
+		<section class="pane">
+			<div class="pane-header">
+				<div class="pane-title">Genes<small>{{rows.length}} of {{genes.length}}</small></div>
+			</div>
+			<div class="toolbar">
+				<el-input v-model="search" size="small" clearable prefix-icon="el-icon-search"
+					placeholder="Search by description, id or #"></el-input>
+				<div class="chips">
+					<button type="button" v-for="kind in kinds" :key="kind.type" class="chip"
+						:class="{active : kindFilter == kind.type}" @click="kindFilter = kind.type">
+						<span v-if="kind.type != -1" class="dot" :class="'kind-' + kind.type"
+							style="margin-right:0"></span>
+						{{kind.label}} <span class="count">{{kindCount(kind.type)}}</span>
+					</button>
+				</div>
+			</div>
+			<div class="pane-body">
+				<table class="genome-table" v-if="rows.length > 0">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Description</th>
+							<th>Id</th>
+							<th>Gen</th>
+							<th>Switch on</th>
+							<th>Sex</th>
+							<th>Mut</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="row in rows" :key="row.index" @click="toggleGeneSelection(row.gene)"
+							:class="['kind-' + row.gene.type, {selected : isSelected(row.gene)}]">
+							<td class="muted">{{row.index}}</td>
+							<td class="description" :title="describe(row.gene)"><span class="dot"></span>{{describe(row.gene)}}</td>
+							<td>{{row.gene.id}}</td>
+							<td>{{row.gene.generation}}</td>
+							<td>{{row.gene.age}}</td>
+							<td>{{row.gene.sex}}</td>
+							<td class="muted">{{row.gene.mutability | to_string}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="empty" v-else>
+					<div class="emoji">&#128269;</div>
+					<div>No gene matches your filters.</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="pane">
+			<div class="pane-header">
+				<div class="pane-title">Selected genes<small v-if="selectedGenes.length > 0">{{selectedGenes.length}}</small></div>
+				<button type="button" class="btn" v-if="selectedGenes.length > 0" @click="clearSelection()">Clear selection</button>
+			</div>
+			<div class="pane-body">
+				<div class="details" v-if="selectedGenes.length > 0">
+					<gene-view v-model="selectedGenes" :notes="genomeNotes"/>
+				</div>
+				<div class="empty" v-else>
+					<div class="emoji">&#128073;</div>
+					<div><strong>Select a gene</strong> in the list to inspect and edit it here.</div>
+					<div>You can select several genes to compare them.</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<main class="start" v-else>
+		<div class="start-card">
+			<h1>Open a genome</h1>
+			<p>Browse and edit the genes of a Creatures 3 / Docking Station genome file.</p>
+			<file-select v-model="file" label="Choose a genome file" hint="or drop it here"></file-select>
+			<div class="error-banner" v-if="genome != null">
+				<strong>{{file ? file.name : 'This file'}}</strong> is not a valid genome (no <code>dna3</code> header found).
+			</div>
 		</div>
-		<div class="gene-view">
-			<gene-view v-model="selectedGenes" :notes="genomeNotes"/>
-		</div>
-	</div>
-	<div v-else>
-		<p>Open a genome: <file-select v-model="file"></file-select>
-		</p>
-		<p v-if="file">{{file.name}}</p>
-	</div>
+	</main>
 </div>

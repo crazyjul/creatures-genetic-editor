@@ -1,7 +1,7 @@
 <gene-header v-model="value" name="Species" :notes="notes">
-<div>
-    <span>Generation : </span><el-input placeholder="" v-model="value.genus" :disabled="true"></el-input>
-    <span>Father : </span><el-input placeholder="" v-model="value.father" :disabled="true"></el-input>
-    <span>Mother : </span><el-input placeholder="" v-model="value.mother" :disabled="true"></el-input>
-</div>
+    <div class="fields">
+        <div class="field"><span class="label">Genus</span><span class="value">{{value.genus}}</span></div>
+        <div class="field"><span class="label">Father</span><span class="value">{{value.father}}</span></div>
+        <div class="field"><span class="label">Mother</span><span class="value">{{value.mother}}</span></div>
+    </div>
 </gene-header>

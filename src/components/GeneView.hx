@@ -22,7 +22,16 @@ class GeneView extends VComponent<NoneT, Props> {
         "Inject-panel" => new components.genes.InjectPanel(),
         "Expression-panel" => new components.genes.ExpressionPanel(),
         "Stimulus-panel" => new components.genes.StimulusPanel(),
-        "Genus-panel" => new components.genes.GenusPanel()];
+        "Genus-panel" => new components.genes.GenusPanel(),
+        "Lobe-panel" => new components.genes.LobePanel(),
+        "Tract-panel" => new components.genes.TractPanel(),
+        "Instinct-panel" => new components.genes.InstinctPanel(),
+        "BrainOrgan-panel" => new components.genes.BrainOrganPanel(),
+        "NeuroEmitter-panel" => new components.genes.NeuroEmitterPanel(),
+        "Pigment-panel" => new components.genes.PigmentPanel(),
+        "PigmentBleed-panel" => new components.genes.PigmentBleedPanel(),
+        "Gait-panel" => new components.genes.GaitPanel(),
+        "Pose-panel" => new components.genes.PosePanel()];
     }
 
     override public function Template() {

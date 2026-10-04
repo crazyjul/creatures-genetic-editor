@@ -1,5 +1,498 @@
-.el-container{
-    border: solid;
-    border-width: 2px;
-    border-color: lightblue;
+.gene-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.gene-card-header {
+    display: flex;
+    align-items: stretch;
+    gap: .8rem;
+    padding: .8rem 1rem .8rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.gene-card .kind-bar {
+    flex: none;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--kind-unknown);
+}
+
+.gene-card.kind-0 .kind-bar { background: var(--kind-brain); }
+.gene-card.kind-1 .kind-bar { background: var(--kind-biochem); }
+.gene-card.kind-2 .kind-bar { background: var(--kind-creature); }
+.gene-card.kind-3 .kind-bar { background: var(--kind-organ); }
+
+.gene-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+
+.gene-card .badge {
+    padding: .1rem .55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.gene-annotation {
+    font-weight: 600;
+}
+
+.gene-annotation.muted {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-style: italic;
+}
+
+.gene-meta {
+    margin-top: .15rem;
+    color: var(--text-muted);
+    font-size: .8rem;
+}
+
+.gene-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem 1.4rem;
+    padding: .8rem 1rem;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+}
+
+.gene-controls .control {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.gene-controls .control > label {
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.gene-controls .el-select {
+    width: 130px;
+}
+
+.gene-controls .el-input-number {
+    width: 120px;
+}
+
+.gene-controls .flags {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    height: 32px;
+}
+
+.gene-body {
+    padding: .9rem 1rem 1rem;
+}
+
+/* Key/value grid used by the gene panels */
+.fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: .8rem 1.2rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.field .label {
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.field .value {
+    font-size: .95rem;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.field.wide {
+    grid-column: 1 / -1;
+}
+
+.notice {
+    margin: 0;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.muted {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.token {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 600;
+}
+
+/* ---------- lobe ---------- */
+
+.lobe-summary {
+    display: grid;
+    grid-template-columns: minmax(120px, 200px) 1fr;
+    gap: 1rem 1.4rem;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.lobe-preview-frame {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+}
+
+.lobe-preview {
+    width: 100%;
+    max-height: 200px;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 6px;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, .12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, .12) 1px, transparent 1px);
+}
+
+.lobe-preview-caption {
+    color: var(--text-muted);
+    font-size: .78rem;
+    text-align: center;
+}
+
+/* ---------- tract ---------- */
+
+.tract-flow {
+    display: flex;
+    align-items: stretch;
+    gap: .6rem;
+    margin-bottom: 1rem;
+}
+
+.tract-end {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    padding: .6rem .8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.tract-end .token {
+    font-size: 1.1rem;
+}
+
+.tract-end small {
+    color: var(--text-muted);
+}
+
+.tract-arrow {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    min-width: 84px;
+    color: var(--text-muted);
+    font-size: .72rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.tract-arrow::after {
+    content: "\2192";
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.tract-arrow.migrating {
+    color: var(--accent);
+}
+
+/* ---------- SV rules ---------- */
+
+.rule-block {
+    margin-top: .8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.rule-block summary {
+    padding: .5rem .8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rule {
+    margin: 0;
+    padding: .2rem .8rem .7rem 2.4rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .82rem;
+}
+
+.rule li::marker {
+    color: var(--text-muted);
+}
+
+/* ---------- instinct ---------- */
+
+.instinct-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: .6rem;
+    margin-bottom: 1rem;
+}
+
+.instinct-input {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem .7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.instinct-input.unused {
+    opacity: .55;
+    border-style: dashed;
+}
+
+.instinct-input .label {
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.meter {
+    position: relative;
+    height: 10px;
+    margin-top: 1rem;
+    border-radius: 999px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.meter-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.meter-fill.positive { background: var(--kind-biochem); }
+.meter-fill.negative { background: var(--danger); }
+
+.meter-zero {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--surface);
+}
+
+/* ---------- bars (neuro emitter, pigment) ---------- */
+
+.bar {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--accent);
+}
+
+.bar-mark {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--surface);
+}
+
+.emissions {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.emission {
+    display: grid;
+    grid-template-columns: 110px 1fr 56px;
+    align-items: center;
+    gap: .8rem;
+}
+
+.emission .label,
+.bleed-row .label,
+.label-row {
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.emission .value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- pigment ---------- */
+
+.pigment {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.pigment-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+.swatch {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, .12);
+}
+
+.channel-0 { background: #e5484d; }
+.channel-1 { background: #30a46c; }
+.channel-2 { background: #3e63dd; }
+
+.bleed {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+
+.bleed-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 40px;
+    align-items: center;
+    gap: .8rem;
+}
+
+.bleed-row .meter {
+    margin-top: 0;
+}
+
+.bleed-row .value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- gait and pose ---------- */
+
+.label-row {
+    margin: 1rem 0 .4rem;
+}
+
+.pose-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.pose-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 52px;
+    padding: .35rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.pose-chip small {
+    color: var(--text-muted);
+    font-size: .68rem;
+    font-weight: 500;
+}
+
+.pose-chip.unused {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.pose-parts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.pose-part {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .35rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-alt);
+}
+
+.pose-part .part-name {
+    color: var(--text-muted);
+    font-size: .78rem;
+}
+
+.pose-part .part-code {
+    min-width: 1.4rem;
+    padding: .05rem .3rem;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    text-align: center;
+}
+
+.pose-part.unset .part-code {
+    background: var(--border);
+    color: var(--text-muted);
 }

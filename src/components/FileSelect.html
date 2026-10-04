@@ -1,10 +1,13 @@
-<label class="file-select">
-    <!-- We can't use a normal button element here, as it would become the target of the label. -->
-    <div class="select-button">
-        <!-- Display the filename if a file has been selected. -->
-        <span v-if="value">Selected File: {{value.name}}</span>
-        <span v-else>Select File</span>
+<label class="file-select" :class="{compact : compact, dragging : dragging}"
+    @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false" @drop.prevent="handleDrop">
+    <!-- A label is used instead of a button so that a click opens the hidden file input. -->
+    <template v-if="compact">
+        <span class="btn">{{label || 'Select file'}}</span>
+    </template>
+    <div class="drop-zone" v-else>
+        <div class="drop-icon">&#128194;</div>
+        <div class="drop-label">{{label || 'Select file'}}</div>
+        <div class="drop-hint" v-if="hint">{{hint}}</div>
     </div>
-    <!-- Now, the file input that we hide. -->
     <input type="file" @change="handleFileChange" />
 </label>

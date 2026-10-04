@@ -1,8 +1,8 @@
-<div>
-
-    <div v-for="(gene,index) in value">
-
-        <component :is="value[index].typename + '-panel'" v-if="value[index].typename" v-model="value[index]" :notes="notes" />
-        <gene-header v-else v-model="value[index]" />
-    </div>
+<div class="gene-list">
+    <template v-for="(gene, index) in value">
+        <component :is="gene.typename + '-panel'" v-if="gene.typename" :key="index" v-model="value[index]" :notes="notes" />
+        <gene-header v-else :key="index" v-model="value[index]" name="Not implemented" :notes="notes">
+            <p class="notice">There is no detailed editor for this gene type yet ({{gene.type}}.{{gene.subtype}}). The common settings above can still be viewed.</p>
+        </gene-header>
+    </template>
 </div>

@@ -1,0 +1,34 @@
+<gene-header v-model="value" name="Tract" :notes="notes">
+    <div class="tract-flow">
+        <div class="tract-end">
+            <span class="token">{{value.srcLobe}}</span>
+            <small>neurons {{value.srcMin}} &ndash; {{value.srcMax}}</small>
+            <small>{{value.srcDendrites}} dendrite{{value.srcDendrites == 1 ? '' : 's'}} per neuron</small>
+        </div>
+        <div class="tract-arrow" :class="{migrating : value.migrates}">
+            <span>{{value.migrates ? 'migrating' : 'fixed'}}</span>
+        </div>
+        <div class="tract-end">
+            <span class="token">{{value.dstLobe}}</span>
+            <small>neurons {{value.dstMin}} &ndash; {{value.dstMax}}</small>
+            <small>{{value.dstDendrites}} dendrite{{value.dstDendrites == 1 ? '' : 's'}} per neuron</small>
+        </div>
+    </div>
+
+    <div class="fields">
+        <div class="field"><span class="label">Update time</span><span class="value">{{value.updateTime}}</span></div>
+        <div class="field"><span class="label">Random dendrite count</span><span class="value">{{value.randomDendriteCount ? 'Yes' : 'No'}}</span></div>
+        <div class="field"><span class="label">Source growth var</span><span class="value">{{value.srcGrowthFactorVariable}}</span></div>
+        <div class="field"><span class="label">Destination growth var</span><span class="value">{{value.dstGrowthFactorVariable}}</span></div>
+        <div class="field"><span class="label">Init rule runs</span><span class="value">{{value.runInitRuleAlways ? 'every update' : 'once'}}</span></div>
+    </div>
+
+    <details class="rule-block">
+        <summary>Init rule <span class="muted">{{value.initRule.length}} steps</span></summary>
+        <ol class="rule"><li v-for="(entry, i) in value.initRule" :key="i">{{entry.text}}</li></ol>
+    </details>
+    <details class="rule-block">
+        <summary>Update rule <span class="muted">{{value.updateRule.length}} steps</span></summary>
+        <ol class="rule"><li v-for="(entry, i) in value.updateRule" :key="i">{{entry.text}}</li></ol>
+    </details>
+</gene-header>

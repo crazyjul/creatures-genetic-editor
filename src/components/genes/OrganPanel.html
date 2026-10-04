@@ -1,7 +1,9 @@
 <gene-header v-model="value" name="Organ" :notes="notes">
-    <div>Clock rate : {{value.clockRate}} </div>
-    <div>Repare rate : {{value.repairRate}} </div>
-    <div>Life force : {{value.lifeForce}} </div>
-    <div>Init clock : {{value.initClock}} </div>
-    <div>Zero energy damage : {{value.zeroEnergyDamage}} </div>
+    <div class="fields">
+        <div class="field"><span class="label">Clock rate</span><span class="value">{{value.clockRate}}</span></div>
+        <div class="field"><span class="label">Repair rate</span><span class="value">{{value.repairRate}}</span></div>
+        <div class="field"><span class="label">Life force</span><span class="value">{{value.lifeForce}}</span></div>
+        <div class="field"><span class="label">Init clock</span><span class="value">{{value.initClock}}</span></div>
+        <div class="field"><span class="label">Zero energy damage</span><span class="value">{{value.zeroEnergyDamage}}</span></div>
+    </div>
 </gene-header>

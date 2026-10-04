@@ -1,6 +1,7 @@
 <gene-header v-model="value" name="Expression" :notes="notes">
-    <div>Expression : {{value.expressionId}} </div>
-    <div>weight: {{value.weight}} </div>
-    <div v-for="i in [0, 1, 2, 3]">
-        Drive {{value.drives[i]}} : {{value.driveWeights[i]}} </div>
+    <div class="fields">
+        <div class="field"><span class="label">Expression</span><span class="value">{{value.expressionId}}</span></div>
+        <div class="field"><span class="label">Weight</span><span class="value">{{value.weight | num}}</span></div>
+        <div class="field" v-for="i in [0, 1, 2, 3]" :key="i"><span class="label">Drive {{value.drives[i]}}</span><span class="value">{{value.driveWeights[i] | num}}</span></div>
+    </div>
 </gene-header>

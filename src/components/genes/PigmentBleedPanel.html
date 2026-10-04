@@ -1,0 +1,23 @@
+<gene-header v-model="value" name="Pigment bleed" :notes="notes">
+    <div class="bleed">
+        <div class="bleed-row">
+            <span class="label">Rotation</span>
+            <div class="meter">
+                <div class="meter-fill" :class="value.rotation < 128 ? 'negative' : 'positive'"
+                    :style="{left : (value.rotation < 128 ? 50 - (128 - value.rotation) / 128 * 50 : 50) + '%', width : Math.abs(value.rotation - 128) / 128 * 50 + '%'}"></div>
+                <div class="meter-zero"></div>
+            </div>
+            <span class="value">{{value.rotation}}</span>
+        </div>
+        <div class="bleed-row">
+            <span class="label">Swap</span>
+            <div class="meter">
+                <div class="meter-fill" :class="value.swap < 128 ? 'negative' : 'positive'"
+                    :style="{left : (value.swap < 128 ? 50 - (128 - value.swap) / 128 * 50 : 50) + '%', width : Math.abs(value.swap - 128) / 128 * 50 + '%'}"></div>
+                <div class="meter-zero"></div>
+            </div>
+            <span class="value">{{value.swap}}</span>
+        </div>
+        <p class="notice">128 is neutral: the pigments are neither rotated nor swapped.</p>
+    </div>
+</gene-header>

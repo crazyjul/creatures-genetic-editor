@@ -68,8 +68,7 @@ class GeneHeader extends VComponent<Data, Props> {
 
     function get_annotation() : String {
         if(notes == null ) return "";
-        var note = notes.getDescription(value.type, value.subtype, value.id);
-        return note != "" ? note : "<no annotation>";
+        return notes.getDescription(value.type, value.subtype, value.id);
     }
 }
 
